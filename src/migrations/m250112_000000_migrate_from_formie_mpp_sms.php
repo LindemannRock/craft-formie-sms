@@ -96,11 +96,12 @@ class m250112_000000_migrate_from_formie_mpp_sms extends Migration
         $this->insert('{{%smsmanager_providers}}', [
             'name' => 'MPP-SMS',
             'handle' => 'mpp-sms',
-            'providerClass' => 'lindemannrock\\smsmanager\\providers\\MppSmsProvider',
+            'type' => 'mpp-sms',
             'settings' => Json::encode([
                 'apiKey' => '$MPP_SMS_API_KEY',
             ]),
             'enabled' => true,
+            'isDefault' => true,
             'sortOrder' => 1,
             'dateCreated' => date('Y-m-d H:i:s'),
             'dateUpdated' => date('Y-m-d H:i:s'),
@@ -149,6 +150,8 @@ class m250112_000000_migrate_from_formie_mpp_sms extends Migration
                 'handle' => $handle,
                 'senderId' => $name,
                 'enabled' => true,
+                'isDefault' => count($mapping) === 0, // First one is default
+                'isTest' => false,
                 'sortOrder' => count($mapping) + 1,
                 'dateCreated' => date('Y-m-d H:i:s'),
                 'dateUpdated' => date('Y-m-d H:i:s'),
