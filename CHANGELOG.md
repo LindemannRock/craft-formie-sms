@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.1.0...v3.2.0) (2026-01-12)
+
+
+### Features
+
+* **migration:** update MPP-SMS provider settings and add default flag ([2e75d79](https://github.com/LindemannRock/craft-formie-sms/commit/2e75d79c3ca0174bc8cb7f67597a968102feb459))
+
 ## [3.1.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.0.0...v3.1.0) (2026-01-12)
 
 
