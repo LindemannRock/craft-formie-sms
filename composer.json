@@ -1,0 +1,61 @@
+{
+	"name": "lindemannrock/craft-formie-sms",
+	"description": "SMS integration for Formie - Send SMS notifications on form submission via SMS Manager",
+	"type": "craft-plugin",
+	"version": "3.0.0",
+	"keywords": [
+		"craft",
+		"cms",
+		"craftcms",
+		"craft-plugin",
+		"formie",
+		"sms",
+		"integration"
+	],
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Bilal Hary Lindemann",
+			"email": "bh@lindemannrock.com",
+			"homepage": "https://lindemannrock.com",
+			"role": "Developer"
+		}
+	],
+	"support": {
+		"email": "support@lindemannrock.com",
+		"issues": "https://github.com/LindemannRock/craft-formie-sms/issues",
+		"source": "https://github.com/LindemannRock/craft-formie-sms",
+		"docs": "https://github.com/LindemannRock/craft-formie-sms/blob/main/README.md",
+		"rss": "https://github.com/LindemannRock/craft-formie-sms/commits/main.atom"
+	},
+	"require": {
+		"php": "^8.2",
+		"craftcms/cms": "^5.0.0",
+		"verbb/formie": "^3.0.0",
+		"lindemannrock/craft-plugin-base": "^5.0",
+		"lindemannrock/craft-sms-manager": "^5.0"
+	},
+	"require-dev": {
+		"craftcms/ecs": "dev-main",
+		"craftcms/phpstan": "dev-main"
+	},
+	"autoload": {
+		"psr-4": {
+			"lindemannrock\\formiesms\\": "src/"
+		}
+	},
+	"scripts": {
+		"phpstan": "phpstan --ansi --memory-limit=1G",
+		"check-cs": "ecs check --ansi",
+		"fix-cs": "ecs check --fix --ansi"
+	},
+	"extra": {
+		"name": "Formie SMS",
+		"handle": "formie-sms",
+		"developer": "LindemannRock",
+		"developerUrl": "https://lindemannrock.com",
+		"documentationUrl": "https://github.com/LindemannRock/craft-formie-sms/blob/main/README.md",
+		"changelogUrl": "https://github.com/LindemannRock/craft-formie-sms/blob/main/CHANGELOG.md",
+		"class": "lindemannrock\\formiesms\\FormieSms"
+	}
+}

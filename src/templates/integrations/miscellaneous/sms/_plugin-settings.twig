@@ -1,0 +1,19 @@
+{% import '_includes/forms' as forms %}
+{% import 'verbb-base/_macros' as macros %}
+
+{% if not craft.app.config.general.allowAdminChanges %}
+    <span class="warning with-icon">
+        {{ 'Integration settings can only be editable on an environment with `allowAdminChanges` enabled.'|t('formie')|md(inlineOnly=true) }}
+    </span>
+{% endif %}
+
+<div class="field">
+    <div class="heading">
+        <label>{{ 'SMS Manager'|t('formie-sms') }}</label>
+    </div>
+    <div class="instructions">
+        <p>{{ 'This integration uses SMS Manager to send SMS messages. Configure providers and sender IDs in the {link} settings.'|t('formie-sms', {
+            link: '<a href="' ~ url('sms-manager/providers') ~ '">SMS Manager</a>'
+        })|raw }}</p>
+    </div>
+</div>

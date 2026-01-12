@@ -1,0 +1,210 @@
+{% import '_includes/forms' as forms %}
+
+{% set handle = integration.handle %}
+{% set formSettings = integration.getFormSettings().getSettings() %}
+
+{% set providerId = form.settings.integrations[handle].providerId ?? '' %}
+{% set senderIdId = form.settings.integrations[handle].senderIdId ?? '' %}
+{% set language = form.settings.integrations[handle].language ?? 'any' %}
+
+{% set settingsValues = {
+    providerId: form.settings.integrations[handle].providerId ?? '',
+    senderIdId: form.settings.integrations[handle].senderIdId ?? '',
+    recipients: form.settings.integrations[handle].recipients ?? '',
+    message: form.settings.integrations[handle].message ?? '',
+    language: form.settings.integrations[handle].language ?? 'any',
+}|json_encode %}
+
+<integration-form-settings
+    :form-settings="{{ formSettings|json_encode }}"
+    :values="{{ settingsValues }}"
+    handle="{{ handle }}"
+>
+    <template v-slot="{ get, isEmpty, input, settings, sourceId, loading, refresh, error, errorMessage, getSourceFields, model }">
+
+        {# Provider Select #}
+        {{ forms.selectField({
+            label: 'Provider'|t('formie-sms'),
+            instructions: 'Select the SMS provider to use.'|t('formie-sms'),
+            name: 'providerId',
+            id: 'providerId',
+            value: providerId,
+            required: true,
+            options: [{label: 'Select a provider...'|t('formie-sms'), value: ''}]|merge(providers),
+        }) }}
+
+        <ul class="errors" v-cloak v-if="!isEmpty(get(form, 'settings.integrations.{{ handle }}.errors.providerId'))">
+            <li :key="index" v-for="(error, index) in get(form, 'settings.integrations.{{ handle }}.errors.providerId')">
+                ${ error }
+            </li>
+        </ul>
+
+        {# Sender ID Select - disabled until provider is selected (via JS) #}
+        {{ forms.selectField({
+            label: 'Sender ID'|t('formie-sms'),
+            instructions: 'Select the sender ID to use for outgoing messages.'|t('formie-sms'),
+            name: 'senderIdId',
+            id: 'senderIdId',
+            value: senderIdId,
+            required: true,
+            options: [{label: 'Select a sender ID...'|t('formie-sms'), value: ''}]|merge(senderIds|map(s => {label: s.label, value: s.value})),
+        }) }}
+
+        <ul class="errors" v-cloak v-if="!isEmpty(get(form, 'settings.integrations.{{ handle }}.errors.senderIdId'))">
+            <li :key="index" v-for="(error, index) in get(form, 'settings.integrations.{{ handle }}.errors.senderIdId')">
+                ${ error }
+            </li>
+        </ul>
+
+        {# Recipients #}
+        <form-kit
+            :buttons="['variableTag']"
+            :required="true"
+            help="{{ 'Use a comma-separated list for multiple recipients.'|t('formie-sms') }}"
+            label="{{ 'Recipient(s)'|t('formie-sms') }}"
+            rows="1"
+            type="richText"
+            v-model="model.recipients"
+            variables="plainTextVariables"
+        ></form-kit>
+
+        <input type="hidden" name="recipients" :value="model.recipients" />
+
+        <ul class="errors" v-cloak v-if="!isEmpty(get(form, 'settings.integrations.{{ handle }}.errors.recipients'))">
+            <li :key="index" v-for="(error, index) in get(form, 'settings.integrations.{{ handle }}.errors.recipients')">
+                ${ error }
+            </li>
+        </ul>
+
+        {# Message #}
+        <form-kit
+            :buttons="['variableTag', 'align-left', 'align-right', 'undo', 'redo']"
+            :required="true"
+            help="{{ 'The SMS message content. Use form field variables to personalize.'|t('formie-sms') }}"
+            label="{{ 'Message'|t('formie-sms') }}"
+            type="richText"
+            v-model="model.message"
+            variables="plainTextVariables"
+        ></form-kit>
+
+        <input type="hidden" name="message" :value="model.message" />
+
+        <ul class="errors" v-cloak v-if="!isEmpty(get(form, 'settings.integrations.{{ handle }}.errors.message'))">
+            <li :key="index" v-for="(error, index) in get(form, 'settings.integrations.{{ handle }}.errors.message')">
+                ${ error }
+            </li>
+        </ul>
+
+        {# Language Filter #}
+        {{ forms.selectField({
+            label: 'Language Filter'|t('formie-sms'),
+            instructions: 'Only send SMS when the form is submitted from a specific language site.'|t('formie-sms'),
+            name: 'language',
+            id: 'language',
+            value: language,
+            required: true,
+            options: languages,
+        }) }}
+
+    </template>
+</integration-form-settings>
+
+{% set providerDropdown = 'providerId'|namespaceInputName %}
+{% set senderIdDropdown = 'senderIdId'|namespaceInputName %}
+{% set languageDropdown = 'language'|namespaceInputName %}
+{% set messageInput = 'message'|namespaceInputName %}
+
+{# Sender IDs data with provider mapping #}
+{% set senderIdsData = {} %}
+{% for senderId in senderIds %}
+    {% set senderIdsData = senderIdsData|merge({(senderId.value): {
+        label: senderId.label,
+        value: senderId.value,
+        providerId: senderId.providerId
+    }}) %}
+{% endfor %}
+
+{% js %}
+$(function() {
+    var senderIdsData = {{ senderIdsData|json_encode|raw }};
+    var $providerSelect = $("[name='{{ providerDropdown }}']");
+    var $senderIdSelect = $("[name='{{ senderIdDropdown }}']");
+    var currentSenderId = '{{ senderIdId }}';
+
+    function updateSenderIdOptions() {
+        var selectedProviderId = $providerSelect.val();
+        var currentValue = $senderIdSelect.val();
+
+        // Clear existing options except the placeholder
+        $senderIdSelect.find('option:not(:first)').remove();
+
+        if (!selectedProviderId) {
+            // Disable if no provider selected
+            $senderIdSelect.attr('disabled', 'disabled');
+            $senderIdSelect.closest('.select').addClass('disabled');
+            $senderIdSelect.closest('.field').addClass('disabled');
+            $senderIdSelect.val('');
+            return;
+        }
+
+        // Enable the dropdown
+        $senderIdSelect.removeAttr('disabled');
+        $senderIdSelect.closest('.select').removeClass('disabled');
+        $senderIdSelect.closest('.field').removeClass('disabled');
+
+        // Add filtered options
+        var hasOptions = false;
+        Object.keys(senderIdsData).forEach(function(id) {
+            var senderId = senderIdsData[id];
+            if (String(senderId.providerId) === String(selectedProviderId)) {
+                var $option = $('<option></option>')
+                    .attr('value', senderId.value)
+                    .text(senderId.label);
+                $senderIdSelect.append($option);
+                hasOptions = true;
+            }
+        });
+
+        // Restore previous value if still valid, otherwise clear
+        if (currentValue && $senderIdSelect.find('option[value="' + currentValue + '"]').length) {
+            $senderIdSelect.val(currentValue);
+        } else if (currentSenderId && $senderIdSelect.find('option[value="' + currentSenderId + '"]').length) {
+            $senderIdSelect.val(currentSenderId);
+            currentSenderId = ''; // Only use once
+        } else {
+            $senderIdSelect.val('');
+        }
+
+        // If no sender IDs for this provider, show message
+        if (!hasOptions) {
+            $senderIdSelect.find('option:first').text('{{ 'No sender IDs for this provider'|t('formie-sms') }}');
+        } else {
+            $senderIdSelect.find('option:first').text('{{ 'Select a sender ID...'|t('formie-sms') }}');
+        }
+    }
+
+    function checkDirection() {
+        var language = $("[name='{{ languageDropdown }}']").val();
+        var $richText = $("[name='{{ messageInput }}']").closest("div").find(".fui-rich-text");
+        if (language === 'ar') {
+            $richText.css({"direction": "rtl"});
+        } else {
+            $richText.css({"direction": "ltr"});
+        }
+    }
+
+    // Provider change handler
+    $providerSelect.on('change', function() {
+        updateSenderIdOptions();
+    });
+
+    // Language change handler
+    $("[name='{{ languageDropdown }}']").on('change', function() {
+        checkDirection();
+    });
+
+    // Initialize
+    updateSenderIdOptions();
+    checkDirection();
+});
+{% endjs %}

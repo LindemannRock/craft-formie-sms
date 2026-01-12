@@ -1,0 +1,27 @@
+{% import '_includes/forms' as forms %}
+
+{{ forms.textField({
+    label: 'Plugin Name'|t('formie-sms'),
+    instructions: 'The display name for this plugin in the control panel.'|t('formie-sms'),
+    id: 'pluginName',
+    name: 'pluginName',
+    value: settings.pluginName,
+    required: true,
+    errors: settings.getErrors('pluginName'),
+}) }}
+
+<hr>
+
+<h2>{{ 'SMS Manager Integration'|t('formie-sms') }}</h2>
+
+<p class="light">
+    {{ 'This plugin integrates with {link} to send SMS notifications when forms are submitted.'|t('formie-sms', {
+        link: '<a href="' ~ url('sms-manager') ~ '">SMS Manager</a>'
+    })|raw }}
+</p>
+
+<p class="light">
+    {{ 'Configure your SMS providers and sender IDs in SMS Manager, then use this integration in your Formie forms.'|t('formie-sms') }}
+</p>
+
+{% include 'lindemannrock-base/_components/plugin-credit' %}
