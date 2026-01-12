@@ -17,7 +17,10 @@ use craft\events\RegisterTemplateRootsEvent;
 use craft\web\View;
 use lindemannrock\base\helpers\PluginHelper;
 use lindemannrock\formiesms\integrations\miscellaneous\Sms;
+use lindemannrock\formiesms\integrations\SmsManagerIntegration;
 use lindemannrock\formiesms\models\Settings;
+use lindemannrock\smsmanager\events\RegisterIntegrationsEvent as SmsManagerRegisterIntegrationsEvent;
+use lindemannrock\smsmanager\services\IntegrationsService;
 use verbb\formie\events\RegisterIntegrationsEvent;
 use verbb\formie\services\Integrations;
 use yii\base\Event;
@@ -79,6 +82,15 @@ class FormieSms extends Plugin
             Integrations::EVENT_REGISTER_INTEGRATIONS,
             function(RegisterIntegrationsEvent $event) {
                 $event->miscellaneous[] = Sms::class;
+            }
+        );
+
+        // Register with SMS Manager's integration system (for usage tracking)
+        Event::on(
+            IntegrationsService::class,
+            IntegrationsService::EVENT_REGISTER_INTEGRATIONS,
+            function(SmsManagerRegisterIntegrationsEvent $event) {
+                $event->register('formie-sms', 'Formie SMS', SmsManagerIntegration::class);
             }
         );
 
