@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.2.1...v3.3.0) (2026-01-13)
+
+
+### Features
+
+* add support for parsing phone field variables in SMS message rendering ([6b11d7d](https://github.com/LindemannRock/craft-formie-sms/commit/6b11d7d4fe601b71c1d30a7b06de7927780ab4ba))
+
 ## [3.2.1](https://github.com/LindemannRock/craft-formie-sms/compare/v3.2.0...v3.2.1) (2026-01-13)
 
 
