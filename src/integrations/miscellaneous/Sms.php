@@ -161,21 +161,14 @@ class Sms extends Miscellaneous
      */
     public function sendPayload(Submission $submission): bool
     {
-        Craft::info('sendPayload called for submission: ' . $submission->id, __METHOD__);
-
         // Check if SMS Manager is installed
         if (!$this->isSmsManagerInstalled()) {
             Integration::error($this, Craft::t('formie-sms', 'SMS Manager plugin is not installed.'));
-            Craft::error('SMS Manager plugin is not installed', __METHOD__);
             return false;
         }
 
-        Craft::info('SMS Manager is installed', __METHOD__);
-
         // Get the submission's site language
         $originLanguage = $submission->getSite()->getLocale()->getLanguageID();
-
-        Craft::info("Language check - Origin: '{$originLanguage}', Filter: '{$this->language}'", __METHOD__);
 
         // Check language filter
         if ($this->language !== 'any' && $originLanguage !== $this->language) {
@@ -186,18 +179,12 @@ class Sms extends Miscellaneous
             return true; // Return true as this is expected behavior, not an error
         }
 
-        Craft::info('Language check passed', __METHOD__);
-
         // Parse recipients
         $recipientsRaw = $this->renderMessage($this->recipients, $submission);
         $recipients = array_map('trim', explode(',', $recipientsRaw));
 
-        Craft::info('Parsed recipients: ' . json_encode($recipients), __METHOD__);
-
         // Parse message
         $message = $this->renderMessage($this->message, $submission);
-
-        Craft::info('Parsed message: ' . substr($message, 0, 100), __METHOD__);
 
         // Get the SMS service from SMS Manager
         $smsService = SmsManager::$plugin->sms;
@@ -205,11 +192,8 @@ class Sms extends Miscellaneous
         // Send SMS to each recipient
         foreach ($recipients as $recipient) {
             if (empty($recipient)) {
-                Craft::info('Skipping empty recipient', __METHOD__);
                 continue;
             }
-
-            Craft::info("Attempting to send SMS to: {$recipient}", __METHOD__);
 
             try {
                 $result = $smsService->send(
@@ -222,21 +206,16 @@ class Sms extends Miscellaneous
                     $submission->id
                 );
 
-                Craft::info("SMS send result for {$recipient}: " . ($result ? 'success' : 'failed'), __METHOD__);
-
                 if (!$result) {
                     Integration::error($this, Craft::t('formie-sms', 'Failed to send SMS to {recipient}', [
                         'recipient' => $recipient,
                     ]));
                 }
             } catch (\Throwable $e) {
-                Craft::error("SMS send exception: " . $e->getMessage(), __METHOD__);
                 $exception = $e instanceof \Exception ? $e : new \Exception($e->getMessage(), (int) $e->getCode(), $e);
                 Integration::apiError($this, $exception);
             }
         }
-
-        Craft::info('sendPayload completed', __METHOD__);
 
         return true;
     }
@@ -271,8 +250,6 @@ class Sms extends Miscellaneous
      */
     private function parsePhoneFieldVariables(string $template, Submission $submission): string
     {
-        Craft::info('parsePhoneFieldVariables input: ' . substr($template, 0, 500), __METHOD__);
-
         // Match phone field variable patterns in the rich text JSON
         // Pattern: "value":"{field.HANDLE.PROPERTY}" or "{field:HANDLE.PROPERTY}"
         // Different Formie versions use different separators (dot vs colon)
@@ -282,12 +259,8 @@ class Sms extends Miscellaneous
                 $fieldHandle = $matches[1];
                 $property = $matches[2];
 
-                Craft::info("Phone field match: handle={$fieldHandle}, property={$property}", __METHOD__);
-
                 // Get the field value from submission
                 $value = $submission->getFieldValue($fieldHandle);
-
-                Craft::info("Phone field value type: " . gettype($value) . ", value: " . json_encode($value), __METHOD__);
 
                 if ($value === null) {
                     Craft::warning("Phone field '{$fieldHandle}' not found in submission", __METHOD__);
