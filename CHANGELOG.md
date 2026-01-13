@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.1](https://github.com/LindemannRock/craft-formie-sms/compare/v3.6.0...v3.6.1) (2026-01-13)
+
+
+### Bug Fixes
+
+* remove unnecessary logging from sendPayload and parsePhoneFieldVariables methods ([e4ef181](https://github.com/LindemannRock/craft-formie-sms/commit/e4ef181eb439b3d701c78b8bf037f8459792c0ab))
+
 ## [3.6.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.5.0...v3.6.0) (2026-01-13)
 
 
