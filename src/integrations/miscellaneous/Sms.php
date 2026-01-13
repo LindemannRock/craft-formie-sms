@@ -274,9 +274,10 @@ class Sms extends Miscellaneous
         Craft::info('parsePhoneFieldVariables input: ' . substr($template, 0, 500), __METHOD__);
 
         // Match phone field variable patterns in the rich text JSON
-        // Pattern: "value":"{field:HANDLE.PROPERTY}"
+        // Pattern: "value":"{field.HANDLE.PROPERTY}" or "{field:HANDLE.PROPERTY}"
+        // Different Formie versions use different separators (dot vs colon)
         return preg_replace_callback(
-            '/\{field:([^.}]+)\.(countryCode|number|country|countryName)\}/',
+            '/\{field[.:]([^.}]+)\.(countryCode|number|country|countryName)\}/',
             function($matches) use ($submission) {
                 $fieldHandle = $matches[1];
                 $property = $matches[2];
