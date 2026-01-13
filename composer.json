@@ -2,7 +2,7 @@
 	"name": "lindemannrock/craft-formie-sms",
 	"description": "SMS integration for Formie - Send SMS notifications on form submission via SMS Manager",
 	"type": "craft-plugin",
-	"version": "3.3.0",
+	"version": "3.4.0",
 	"keywords": [
 		"craft",
 		"cms",

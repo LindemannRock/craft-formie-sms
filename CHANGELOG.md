@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.3.0...v3.4.0) (2026-01-13)
+
+
+### Features
+
+* add logging to sendPayload method for better debugging ([7e6b760](https://github.com/LindemannRock/craft-formie-sms/commit/7e6b760f8f1dbef166e64c9e4848626033428f12))
+
 ## [3.3.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.2.1...v3.3.0) (2026-01-13)
 
 
