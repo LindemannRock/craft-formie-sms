@@ -234,9 +234,52 @@ class Sms extends Miscellaneous
      */
     private function renderMessage(string $template, Submission $submission): string
     {
+        // First, handle phone field subproperties that RichTextHelper doesn't support
+        // Phone fields don't extend SubField, so {field:phone.countryCode} etc. don't work
+        $template = $this->parsePhoneFieldVariables($template, $submission);
+
         $html = RichTextHelper::getHtmlContent($template, $submission);
         $converter = new HtmlConverter(['strip_tags' => true]);
+
         return $converter->convert($html);
+    }
+
+    /**
+     * Parse phone field variables that RichTextHelper doesn't handle
+     * Converts {field:phone.countryCode}, {field:phone.number} etc. to actual values
+     */
+    private function parsePhoneFieldVariables(string $template, Submission $submission): string
+    {
+        // Match phone field variable patterns in the rich text JSON
+        // Pattern: "value":"{field:HANDLE.PROPERTY}"
+        return preg_replace_callback(
+            '/\{field:([^.}]+)\.(countryCode|number|country|countryName)\}/',
+            function($matches) use ($submission) {
+                $fieldHandle = $matches[1];
+                $property = $matches[2];
+
+                // Get the field value from submission
+                $value = $submission->getFieldValue($fieldHandle);
+
+                if ($value === null) {
+                    Craft::warning("Phone field '{$fieldHandle}' not found in submission", __METHOD__);
+                    return '';
+                }
+
+                // PhoneModel has these properties
+                if (is_object($value)) {
+                    return match ($property) {
+                        'countryCode' => $value->countryCode ?? '',
+                        'number' => $value->number ?? '',
+                        'country' => $value->country ?? '',
+                        'countryName' => $value->countryName ?? '',
+                    };
+                }
+
+                return '';
+            },
+            $template
+        );
     }
 
     /**
