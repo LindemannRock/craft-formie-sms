@@ -271,6 +271,8 @@ class Sms extends Miscellaneous
      */
     private function parsePhoneFieldVariables(string $template, Submission $submission): string
     {
+        Craft::info('parsePhoneFieldVariables input: ' . substr($template, 0, 500), __METHOD__);
+
         // Match phone field variable patterns in the rich text JSON
         // Pattern: "value":"{field:HANDLE.PROPERTY}"
         return preg_replace_callback(
@@ -279,8 +281,12 @@ class Sms extends Miscellaneous
                 $fieldHandle = $matches[1];
                 $property = $matches[2];
 
+                Craft::info("Phone field match: handle={$fieldHandle}, property={$property}", __METHOD__);
+
                 // Get the field value from submission
                 $value = $submission->getFieldValue($fieldHandle);
+
+                Craft::info("Phone field value type: " . gettype($value) . ", value: " . json_encode($value), __METHOD__);
 
                 if ($value === null) {
                     Craft::warning("Phone field '{$fieldHandle}' not found in submission", __METHOD__);
