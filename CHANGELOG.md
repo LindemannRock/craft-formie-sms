@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.5.0...v3.6.0) (2026-01-13)
+
+
+### Features
+
+* update phone field variable pattern to support different separators ([e0ec142](https://github.com/LindemannRock/craft-formie-sms/commit/e0ec1424140ac3213505d88e2359a7bab689360f))
+
 ## [3.5.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.4.0...v3.5.0) (2026-01-13)
 
 
