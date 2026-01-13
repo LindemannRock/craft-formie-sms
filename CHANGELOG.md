@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.5.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.4.0...v3.5.0) (2026-01-13)
+
+
+### Features
+
+* add logging to parsePhoneFieldVariables for improved debugging ([bdbaae4](https://github.com/LindemannRock/craft-formie-sms/commit/bdbaae499451efd89cc0e2ef17e48654e020ac61))
+
 ## [3.4.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.3.0...v3.4.0) (2026-01-13)
 
 
