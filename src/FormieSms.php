@@ -5,7 +5,7 @@
  * SMS integration for Formie - Send SMS notifications on form submission via SMS Manager
  *
  * @link      https://lindemannrock.com
- * @copyright Copyright (c) 2025 LindemannRock
+ * @copyright Copyright (c) 2026 LindemannRock
  */
 
 namespace lindemannrock\formiesms;
