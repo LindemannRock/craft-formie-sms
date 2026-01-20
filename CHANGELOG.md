@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.2](https://github.com/LindemannRock/craft-formie-sms/compare/v3.6.1...v3.6.2) (2026-01-20)
+
+
+### Bug Fixes
+
+* remove migration for formie-mpp-sms - no longer needed ([28ae475](https://github.com/LindemannRock/craft-formie-sms/commit/28ae4758cd0f7465c4477d9bdd5d42c685842966))
+
 ## [3.6.1](https://github.com/LindemannRock/craft-formie-sms/compare/v3.6.0...v3.6.1) (2026-01-13)
 
 
