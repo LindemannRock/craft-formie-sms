@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.6.2...v3.7.0) (2026-01-26)
+
+
+### Features
+
+* simplify SMS Manager plugin name retrieval and installation checks ([cd68365](https://github.com/LindemannRock/craft-formie-sms/commit/cd683654d8d7044d2f9995544179aa99e68fa3a3))
+
 ## [3.6.2](https://github.com/LindemannRock/craft-formie-sms/compare/v3.6.1...v3.6.2) (2026-01-20)
 
 
