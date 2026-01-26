@@ -11,6 +11,7 @@ namespace lindemannrock\formiesms\integrations\miscellaneous;
 use Craft;
 use craft\helpers\UrlHelper;
 use League\HTMLToMarkdown\HtmlConverter;
+use lindemannrock\base\helpers\PluginHelper;
 use lindemannrock\smsmanager\SmsManager;
 use verbb\formie\base\Integration;
 use verbb\formie\base\Miscellaneous;
@@ -58,15 +59,7 @@ class Sms extends Miscellaneous
      */
     public static function displayName(): string
     {
-        // Use sms-manager plugin name if available
-        if (Craft::$app->plugins->isPluginInstalled('sms-manager') && class_exists(SmsManager::class)) {
-            $plugin = SmsManager::$plugin;
-            if ($plugin !== null) {
-                return $plugin->getSettings()->getFullName();
-            }
-        }
-
-        return Craft::t('formie-sms', 'SMS Manager');
+        return PluginHelper::getPluginName('sms-manager', Craft::t('formie-sms', 'SMS Manager'));
     }
 
     /**
@@ -225,8 +218,8 @@ class Sms extends Miscellaneous
      */
     private function isSmsManagerInstalled(): bool
     {
-        return Craft::$app->plugins->isPluginInstalled('sms-manager')
-            && Craft::$app->plugins->isPluginEnabled('sms-manager');
+        return PluginHelper::isPluginInstalled('sms-manager')
+            && PluginHelper::isPluginEnabled('sms-manager');
     }
 
     /**
