@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.7.1](https://github.com/LindemannRock/craft-formie-sms/compare/v3.7.0...v3.7.1) (2026-02-22)
+
+
+### Miscellaneous Chores
+
+* add .gitattributes with export-ignore for Packagist distribution ([7934e25](https://github.com/LindemannRock/craft-formie-sms/commit/7934e250f284bb391c888cefccf2aa46be53bd60))
+* switch to Craft License for commercial release ([f02e34a](https://github.com/LindemannRock/craft-formie-sms/commit/f02e34abbec67992c2c2fe3ae6dc7cc8af3294cb))
+
 ## [3.7.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.6.2...v3.7.0) (2026-01-26)
 
 
