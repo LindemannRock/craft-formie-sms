@@ -1,5 +1,13 @@
 {% import '_includes/forms' as forms %}
 
+{% if settings is defined and settings.hasErrors() %}
+    {{ include('lindemannrock-base/_partials/error-summary', {
+        errors: settings.getErrors(),
+        translationCategory: 'formie-sms',
+        linkMode: 'field-id',
+    }) }}
+{% endif %}
+
 {{ forms.textField({
     label: 'Plugin Name'|t('formie-sms'),
     instructions: 'The display name for this plugin in the control panel.'|t('formie-sms'),
