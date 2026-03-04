@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.2](https://github.com/LindemannRock/craft-formie-sms/compare/v3.7.1...v3.7.2) (2026-03-04)
+
+
+### Bug Fixes
+
+* **settings:** add error summary display for plugin settings ([aeb67c4](https://github.com/LindemannRock/craft-formie-sms/commit/aeb67c471eb0038d289a2ef052db4817c3c80349))
+
 ## [3.7.1](https://github.com/LindemannRock/craft-formie-sms/compare/v3.7.0...v3.7.1) (2026-02-22)
 
 
