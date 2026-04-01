@@ -25,7 +25,7 @@ use verbb\formie\helpers\RichTextHelper;
  *
  * @author    LindemannRock
  * @package   FormieSms
- * @since     1.0.0
+ * @since     3.0.0
  */
 class Sms extends Miscellaneous
 {

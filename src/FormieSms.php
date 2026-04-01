@@ -30,7 +30,7 @@ use yii\base\Event;
  *
  * @author    LindemannRock
  * @package   FormieSms
- * @since     1.0.0
+ * @since     3.0.0
  *
  * @property-read Settings $settings
  * @method Settings getSettings()

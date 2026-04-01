@@ -16,7 +16,7 @@ use lindemannrock\base\traits\SettingsDisplayNameTrait;
  *
  * @author    LindemannRock
  * @package   FormieSms
- * @since     1.0.0
+ * @since     3.0.0
  */
 class Settings extends Model
 {
