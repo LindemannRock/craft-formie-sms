@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.8.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.7.2...v3.8.0) (2026-04-02)
+
+
+### Features
+
+* **icon:** replace existing icon with new SVG design ([9f964fd](https://github.com/LindemannRock/craft-formie-sms/commit/9f964fd1d9a9cdec2e2ab526cc0d8e29f8c15bf7))
+
 ## [3.7.2](https://github.com/LindemannRock/craft-formie-sms/compare/v3.7.1...v3.7.2) (2026-03-04)
 
 
