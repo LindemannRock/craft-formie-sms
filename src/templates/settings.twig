@@ -15,6 +15,8 @@
     name: 'pluginName',
     value: settings.pluginName,
     required: true,
+    warning: settings.isOverriddenByConfig('pluginName') ? 'This is being overridden by the `pluginName` setting in the `config/formie-sms.php` file.'|t('formie-sms'),
+    disabled: settings.isOverriddenByConfig('pluginName'),
     errors: settings.getErrors('pluginName'),
 }) }}
 

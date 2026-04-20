@@ -9,6 +9,7 @@
 namespace lindemannrock\formiesms\models;
 
 use craft\base\Model;
+use lindemannrock\base\traits\SettingsConfigTrait;
 use lindemannrock\base\traits\SettingsDisplayNameTrait;
 
 /**
@@ -20,6 +21,7 @@ use lindemannrock\base\traits\SettingsDisplayNameTrait;
  */
 class Settings extends Model
 {
+    use SettingsConfigTrait;
     use SettingsDisplayNameTrait;
 
     /**
@@ -36,5 +38,13 @@ class Settings extends Model
             ['pluginName', 'required'],
             ['pluginName', 'string'],
         ];
+    }
+
+    /**
+     * Plugin handle for config file resolution
+     */
+    protected static function pluginHandle(): string
+    {
+        return 'formie-sms';
     }
 }
