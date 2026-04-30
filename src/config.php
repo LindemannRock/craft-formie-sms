@@ -8,7 +8,7 @@
  * Don't edit this file, instead copy it to 'craft/config' as 'formie-sms.php'
  * and make your changes there to override default settings.
  *
- * @since 8.8.1
+ * @since 3.0.0
  */
 
 return [
