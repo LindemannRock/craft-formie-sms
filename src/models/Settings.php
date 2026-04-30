@@ -8,6 +8,7 @@
 
 namespace lindemannrock\formiesms\models;
 
+use Craft;
 use craft\base\Model;
 use lindemannrock\base\traits\SettingsConfigTrait;
 use lindemannrock\base\traits\SettingsDisplayNameTrait;
@@ -37,6 +38,16 @@ class Settings extends Model
         return [
             ['pluginName', 'required'],
             ['pluginName', 'string'],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels(): array
+    {
+        return [
+            'pluginName' => Craft::t('formie-sms', 'Plugin Name'),
         ];
     }
 
