@@ -99,11 +99,6 @@ class FormieSms extends Plugin
         if (!empty($settings->pluginName)) {
             $this->name = $settings->pluginName;
         }
-
-        Craft::info(
-            'Formie SMS plugin loaded',
-            __METHOD__
-        );
     }
 
     /**
