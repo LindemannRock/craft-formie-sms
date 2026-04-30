@@ -8,9 +8,11 @@
     }) }}
 {% endif %}
 
+<h2 class="first">{{ 'General Settings'|t('formie-sms') }}</h2>
+
 {{ forms.textField({
     label: 'Plugin Name'|t('formie-sms'),
-    instructions: 'The display name for this plugin in the control panel.'|t('formie-sms'),
+    instructions: 'The name of the plugin as it appears in the Control Panel menu'|t('formie-sms'),
     id: 'pluginName',
     name: 'pluginName',
     value: settings.pluginName,
