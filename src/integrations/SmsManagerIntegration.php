@@ -8,10 +8,10 @@
 
 namespace lindemannrock\formiesms\integrations;
 
+use craft\db\Query;
 use craft\helpers\UrlHelper;
 use lindemannrock\smsmanager\integrations\IntegrationInterface;
 use verbb\formie\elements\Form;
-use verbb\formie\Formie;
 
 /**
  * SMS Manager Integration
@@ -31,11 +31,24 @@ class SmsManagerIntegration implements IntegrationInterface
     {
         $usages = [];
 
-        // Get all forms that have this provider configured
-        $forms = Form::find()->all();
+        // Pre-filter at SQL level on the JSON-as-TEXT settings column to avoid hydrating every form.
+        // Formie stores form-input integer fields as quoted strings ("providerId":"1"), so the LIKE
+        // pattern includes the quotes. The LIKE is still coarse (could match "providerId":"50" when
+        // searching for "5"); the PHP loop below does the exact match.
+        $matchingIds = (new Query())
+            ->select('id')
+            ->from('{{%formie_forms}}')
+            ->andWhere(['like', 'settings', '"providerId":"' . (int)$providerId . '"'])
+            ->column();
+
+        if (empty($matchingIds)) {
+            return $usages;
+        }
+
+        $forms = Form::find()->id($matchingIds)->all();
 
         foreach ($forms as $form) {
-            $settings = $form->settings->integrations ?? [];
+            $settings = $form->settings?->integrations ?? [];
 
             foreach ($settings as $handle => $integrationSettings) {
                 // Check if this is our SMS integration and uses this provider
@@ -61,11 +74,23 @@ class SmsManagerIntegration implements IntegrationInterface
     {
         $usages = [];
 
-        // Get all forms that have this sender ID configured
-        $forms = Form::find()->all();
+        // Pre-filter at SQL level on the JSON-as-TEXT settings column. See getProviderUsages() above
+        // for the rationale (Formie stores integer fields as quoted strings). PHP loop below does
+        // the exact match.
+        $matchingIds = (new Query())
+            ->select('id')
+            ->from('{{%formie_forms}}')
+            ->andWhere(['like', 'settings', '"senderIdId":"' . (int)$senderIdId . '"'])
+            ->column();
+
+        if (empty($matchingIds)) {
+            return $usages;
+        }
+
+        $forms = Form::find()->id($matchingIds)->all();
 
         foreach ($forms as $form) {
-            $settings = $form->settings->integrations ?? [];
+            $settings = $form->settings?->integrations ?? [];
 
             foreach ($settings as $handle => $integrationSettings) {
                 // Check if this is our SMS integration and uses this sender ID

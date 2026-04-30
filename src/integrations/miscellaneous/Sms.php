@@ -172,9 +172,31 @@ class Sms extends Miscellaneous
             return true; // Return true as this is expected behavior, not an error
         }
 
-        // Parse recipients
-        $recipientsRaw = $this->renderMessage($this->recipients, $submission);
-        $recipients = array_map('trim', explode(',', $recipientsRaw));
+        // Parse recipients — split the admin's template on commas FIRST, then render
+        // each token. This preserves admin-authored multi-recipient lists while
+        // preventing a submitter-controlled variable (e.g. {textField}) from
+        // injecting extra recipients via comma-separated input.
+        $recipients = [];
+        foreach (explode(',', (string)$this->recipients) as $template) {
+            $template = trim($template);
+            if ($template === '') {
+                continue;
+            }
+            $rendered = trim($this->renderMessage($template, $submission));
+            if ($rendered === '') {
+                continue;
+            }
+            if (!preg_match('/^\+?[0-9]{6,15}$/', $rendered)) {
+                Craft::warning("Skipping invalid SMS recipient '{$rendered}' (from template '{$template}')", __METHOD__);
+                continue;
+            }
+            $recipients[] = $rendered;
+        }
+
+        if ($recipients === []) {
+            Integration::error($this, Craft::t('formie-sms', 'No valid recipients after rendering — SMS not sent. Check the integration\'s "Recipients" template and the submission data.'));
+            return false;
+        }
 
         // Parse message
         $message = $this->renderMessage($this->message, $submission);
@@ -184,10 +206,6 @@ class Sms extends Miscellaneous
 
         // Send SMS to each recipient
         foreach ($recipients as $recipient) {
-            if (empty($recipient)) {
-                continue;
-            }
-
             try {
                 $result = $smsService->send(
                     $recipient,
