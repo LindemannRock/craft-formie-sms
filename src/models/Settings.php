@@ -25,7 +25,7 @@ class Settings extends Model
     use SettingsDisplayNameTrait;
 
     /**
-     * @var string The plugin display name
+     * @var string The name of the plugin as it appears in the Control Panel menu
      */
     public string $pluginName = 'Formie SMS';
 
