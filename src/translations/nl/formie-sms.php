@@ -10,6 +10,8 @@ return [
     // Plugin meta
     'Formie SMS' => 'Formie SMS',
     'Send SMS notifications via SMS Manager on form submission.' => 'Verstuur SMS-meldingen via SMS Manager bij het indienen van formulieren.',
+    'Configure SMS providers and connect Formie submission notifications from the plugin settings area.' => 'Configureer SMS-providers en koppel Formie-inzendingsmeldingen vanuit het instellingengebied van de plugin.',
+    'Open Formie SMS' => 'Formie SMS openen',
     'Plugin Name' => 'Pluginnaam',
     'The name of the plugin as it appears in the Control Panel menu' => 'De naam van de plugin zoals deze wordt weergegeven in het menu van het configuratiescherm',
 

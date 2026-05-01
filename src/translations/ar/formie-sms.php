@@ -10,6 +10,8 @@ return [
     // Plugin meta
     'Formie SMS' => 'Formie SMS',
     'Send SMS notifications via SMS Manager on form submission.' => 'إرسال إشعارات SMS عبر SMS Manager عند تقديم النماذج.',
+    'Configure SMS providers and connect Formie submission notifications from the plugin settings area.' => 'قم بتكوين موفري SMS وربط إشعارات إرسال Formie من منطقة إعدادات الإضافة.',
+    'Open Formie SMS' => 'فتح Formie SMS',
     'Plugin Name' => 'اسم الإضافة',
     'The name of the plugin as it appears in the Control Panel menu' => 'اسم الإضافة كما يظهر في قائمة لوحة التحكم',
 
