@@ -90,7 +90,7 @@ class FormieSms extends Plugin
             IntegrationsService::class,
             IntegrationsService::EVENT_REGISTER_INTEGRATIONS,
             function(SmsManagerRegisterIntegrationsEvent $event) {
-                $event->register('formie-sms', 'Formie SMS', SmsManagerIntegration::class);
+                $event->register('formie-sms', $this->name, SmsManagerIntegration::class);
             }
         );
 
