@@ -20,7 +20,7 @@ use verbb\formie\elements\Form;
  *
  * @author    LindemannRock
  * @package   FormieSms
- * @since     3.0.0
+ * @since     3.1.0
  */
 class SmsManagerIntegration implements IntegrationInterface
 {
