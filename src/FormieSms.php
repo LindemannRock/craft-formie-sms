@@ -61,7 +61,16 @@ class FormieSms extends Plugin
         self::$plugin = $this;
 
         // Bootstrap the base plugin helper
-        PluginHelper::bootstrap($this, 'formieSmsHelper');
+        PluginHelper::bootstrap($this, 'formieSmsHelper', [], [], [
+            'installExperience' => [
+                'headline' => Craft::t('formie-sms', 'Formie SMS'),
+                'body' => Craft::t('formie-sms', 'Configure SMS providers and connect Formie submission notifications from the plugin settings area.'),
+                'ctaLabel' => Craft::t('formie-sms', 'Open Formie SMS'),
+                'ctaUrl' => 'settings/plugins/formie-sms',
+                'redirectUri' => 'settings/plugins/formie-sms',
+                'confettiPreset' => 'surprise',
+            ],
+        ]);
 
         // Set the alias for this plugin
         Craft::setAlias('@lindemannrock/formiesms', __DIR__);
