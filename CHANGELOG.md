@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.9.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.8.0...v3.9.0) (2026-05-06)
+
+
+### Features
+
+* add issue templates for bug reports, feature requests, and questions ([bd0234c](https://github.com/LindemannRock/craft-formie-sms/commit/bd0234cd8a9e1b7f63827acd66f97db5e480a561))
+* enhance plugin installation experience with configuration guidance ([5339636](https://github.com/LindemannRock/craft-formie-sms/commit/5339636bc37d7dde352f0871b13e60cdfdd74d3e))
+* **integration:** enhance recipient parsing for SMS notifications ([8da6f46](https://github.com/LindemannRock/craft-formie-sms/commit/8da6f460be4e303d3addab33c25bed841743ba75))
+* **translations:** add new configuration messages for multiple languages ([6d9da07](https://github.com/LindemannRock/craft-formie-sms/commit/6d9da07a03361bfcc3af56f17f1cbcc9334f0a8d))
+* **translations:** add translation files for multiple languages ([75bd5d7](https://github.com/LindemannRock/craft-formie-sms/commit/75bd5d7cbee6259e8b2222da64612efc9a7bd808))
+
+
+### Bug Fixes
+
+* correct version number in Formie SMS config template ([f5a1141](https://github.com/LindemannRock/craft-formie-sms/commit/f5a11415ef2145284d0d4ac167fa629c2b040f4c))
+* drop PAT requirement for release-please — use built-in GITHUB_TOKEN ([9acfa97](https://github.com/LindemannRock/craft-formie-sms/commit/9acfa97684be233f96a1413928843a8d35df2639))
+* show config override state for plugin name setting ([071b95a](https://github.com/LindemannRock/craft-formie-sms/commit/071b95a1583e12041879a5fde99123aa8331209d))
+* update version number in SmsManagerIntegration to 3.1.0 ([c6e9901](https://github.com/LindemannRock/craft-formie-sms/commit/c6e99014b5699f05db71048fe56b06cbc413262b))
+
 ## [3.8.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.7.2...v3.8.0) (2026-04-02)
 
 
