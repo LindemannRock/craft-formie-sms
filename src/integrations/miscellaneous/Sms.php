@@ -17,6 +17,7 @@ use verbb\formie\base\Integration;
 use verbb\formie\base\Miscellaneous;
 use verbb\formie\elements\Submission;
 use verbb\formie\helpers\RichTextHelper;
+use verbb\formie\models\Phone as FormiePhone;
 
 /**
  * SMS Integration for Formie
@@ -30,12 +31,40 @@ use verbb\formie\helpers\RichTextHelper;
 class Sms extends Miscellaneous
 {
     /**
-     * @var int|null The provider ID from SMS Manager
+     * @var string|null The sender ID handle from SMS Manager.
+     *
+     * Empty string (`''`) is the "Use SMS Manager default" sentinel — the
+     * actual sender is resolved at dispatch time via
+     * `SmsManager::$plugin->senderIds->getDefaultSenderId()`. `null` means
+     * no handle has been saved yet (typically a legacy form saved before
+     * 3.10.0 — `resolveSenderIdHandle()` falls back to the deprecated
+     * `senderIdId` field in that case).
+     *
+     * @since 3.10.0
+     */
+    public ?string $senderIdHandle = null;
+
+    /**
+     * @var int|null Legacy provider ID.
+     *
+     * Ignored at dispatch — the provider is derived from the sender's
+     * `providerHandle` inside SMS Manager's `sendWithHandle()`. Kept for
+     * back-compat reads on forms saved before 3.10.0. Will be removed in
+     * a future release once both prod test installs have migrated via the
+     * `formie-sms/migrate/integration-handles` console command.
+     *
+     * @deprecated 3.10.0
      */
     public ?int $providerId = null;
 
     /**
-     * @var int|null The sender ID from SMS Manager
+     * @var int|null Legacy sender ID.
+     *
+     * Used as a fallback by `resolveSenderIdHandle()` when
+     * `senderIdHandle` is null (pre-3.10.0 forms). Will be removed once
+     * all installs have migrated.
+     *
+     * @deprecated 3.10.0
      */
     public ?int $senderIdId = null;
 
@@ -172,25 +201,36 @@ class Sms extends Miscellaneous
             return true; // Return true as this is expected behavior, not an error
         }
 
-        // Parse recipients — split the admin's template on commas FIRST, then render
-        // each token. This preserves admin-authored multi-recipient lists while
-        // preventing a submitter-controlled variable (e.g. {textField}) from
-        // injecting extra recipients via comma-separated input.
+        // Render the full recipients template first (RichTextHelper handles
+        // Formie's rich-text JSON storage + variable tag substitution),
+        // then split the rendered plain text on commas. Splitting the raw
+        // JSON before rendering — which 3.9.0 briefly did for security —
+        // fragments the JSON structure and breaks every code path that
+        // expects intact rich-text JSON downstream. The per-token phone
+        // regex below catches any tokens that don't look like E.164
+        // phones, which preserves the security intent of the 3.9.0
+        // change (a submitter-controlled variable that smuggles a comma
+        // gets split into pieces that each fail the strict phone regex).
+        $recipientsRaw = trim($this->renderMessage((string)$this->recipients, $submission));
+
         $recipients = [];
-        foreach (explode(',', (string)$this->recipients) as $template) {
-            $template = trim($template);
-            if ($template === '') {
+        foreach (explode(',', $recipientsRaw) as $token) {
+            $token = trim($token);
+            if ($token === '') {
                 continue;
             }
-            $rendered = trim($this->renderMessage($template, $submission));
-            if ($rendered === '') {
+            // Normalize via Formie's own libphonenumber-backed helper:
+            // `{field:phone}` (the PhoneModel object) renders as INTERNATIONAL
+            // format with spaces (`+965 6063 2020`) when the field has
+            // country-code enabled, which our strict E.164 regex rejects.
+            // `toPhoneString()` re-parses and re-formats as E.164 (no spaces).
+            // No-op for already-clean inputs like `97255330` or `+96597255330`.
+            $token = FormiePhone::toPhoneString($token);
+            if (!preg_match('/^\+?[0-9]{6,15}$/', $token)) {
+                Craft::warning("Skipping invalid SMS recipient '{$token}' (rendered recipients: '{$recipientsRaw}')", __METHOD__);
                 continue;
             }
-            if (!preg_match('/^\+?[0-9]{6,15}$/', $rendered)) {
-                Craft::warning("Skipping invalid SMS recipient '{$rendered}' (from template '{$template}')", __METHOD__);
-                continue;
-            }
-            $recipients[] = $rendered;
+            $recipients[] = $token;
         }
 
         if ($recipients === []) {
@@ -198,23 +238,35 @@ class Sms extends Miscellaneous
             return false;
         }
 
+        // Resolve which sender ID handle this integration should use. Handle
+        // empty string ('') resolves to SMS Manager's current default at
+        // dispatch time; null falls through the legacy senderIdId compat
+        // shim for pre-3.10 forms.
+        $senderIdHandle = $this->resolveSenderIdHandle();
+
+        if ($senderIdHandle === null) {
+            Integration::error($this, Craft::t('formie-sms', 'No sender ID configured for this integration. Edit the integration settings and pick a sender, or pick "Use SMS Manager default" after configuring one in SMS Manager.'));
+            return false;
+        }
+
         // Parse message
         $message = $this->renderMessage($this->message, $submission);
 
-        // Get the SMS service from SMS Manager
+        // Route through SMS Manager's handle-based send so config-only
+        // senders work the same as DB-backed ones, and so a misconfigured
+        // SMS Manager default surfaces as an explicit failure rather than
+        // a silent substitution (sms-manager audit 8.2).
         $smsService = SmsManager::$plugin->sms;
 
-        // Send SMS to each recipient
         foreach ($recipients as $recipient) {
             try {
-                $result = $smsService->send(
+                $result = $smsService->sendWithHandle(
                     $recipient,
                     $message,
+                    $senderIdHandle,
                     $originLanguage,
-                    $this->providerId,
-                    $this->senderIdId,
                     'formie-sms',
-                    $submission->id
+                    $submission->id,
                 );
 
                 if (!$result) {
@@ -229,6 +281,44 @@ class Sms extends Miscellaneous
         }
 
         return true;
+    }
+
+    /**
+     * Resolve the sender ID handle this integration should send under.
+     *
+     * Priority chain:
+     *  1. `$senderIdHandle === ''` → "Use SMS Manager default" sentinel,
+     *     resolve `SmsManager`'s current default at dispatch time. Returns
+     *     the default's handle on success, or `null` if no default is
+     *     configured / the configured default doesn't resolve (sms-manager
+     *     8.2 fail-loud behaviour — caller surfaces an error).
+     *  2. `$senderIdHandle` set to a non-empty string → use it directly.
+     *  3. Legacy compat: `$senderIdId` set (pre-3.10 forms) → look up the
+     *     record and use its handle.
+     *  4. Nothing set anywhere → `null`.
+     *
+     * @return string|null The handle to dispatch under, or null on failure.
+     */
+    private function resolveSenderIdHandle(): ?string
+    {
+        // Priority 1: empty-string sentinel → SMS Manager's current default.
+        if ($this->senderIdHandle === '') {
+            $default = SmsManager::$plugin->senderIds->getDefaultSenderId();
+            return $default?->handle;
+        }
+
+        // Priority 2: explicit handle stored on this integration.
+        if ($this->senderIdHandle !== null) {
+            return $this->senderIdHandle;
+        }
+
+        // Priority 3: legacy int field on pre-3.10 forms — resolve to handle.
+        if ($this->senderIdId !== null) {
+            $record = SmsManager::$plugin->senderIds->getSenderIdById($this->senderIdId);
+            return $record?->handle;
+        }
+
+        return null;
     }
 
     /**
