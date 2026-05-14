@@ -138,18 +138,140 @@ class Sms extends Miscellaneous
      */
     public function getFormSettingsHtml($form): string
     {
-        // Get providers and sender IDs from SMS Manager
-        $providers = $this->getProviderOptions();
-        $senderIds = $this->getSenderIdOptions();
+        $senderIdOptions = $this->buildSenderIdOptions();
         $languages = $this->getLanguageOptions();
+
+        // Resolve the sender dropdown's initial value from whatever shape
+        // the form's saved integration block is in. New (3.10+) saves carry
+        // the `senderIdHandle` string; pre-3.10 saves carry the int
+        // `senderIdId` which we look up here just for the dropdown's
+        // initial selection (compat shim runs at render time only).
+        $savedIntegration = $form->settings->integrations[$this->handle] ?? [];
+        $initialSenderIdHandle = $this->resolveInitialSenderIdHandle($savedIntegration);
 
         return Craft::$app->getView()->renderTemplate('formie-sms/integrations/miscellaneous/sms/_form-settings', [
             'integration' => $this,
             'form' => $form,
-            'providers' => $providers,
-            'senderIds' => $senderIds,
+            'senderIdOptions' => $senderIdOptions,
             'languages' => $languages,
+            'initialSenderIdHandle' => $initialSenderIdHandle,
         ]);
+    }
+
+    /**
+     * Resolve the initial sender ID handle for the form-settings dropdown.
+     *
+     * Reads the new `senderIdHandle` field first (3.10+), falls back to the
+     * legacy `senderIdId` int (pre-3.10) — looking up that record so we can
+     * pre-select the handle that corresponds to it. Returns empty string
+     * when no value is saved.
+     *
+     * @param array<string, mixed> $savedIntegration
+     */
+    private function resolveInitialSenderIdHandle(array $savedIntegration): string
+    {
+        $savedHandle = $savedIntegration['senderIdHandle'] ?? null;
+        if ($savedHandle !== null) {
+            return (string) $savedHandle;
+        }
+
+        $legacyId = $savedIntegration['senderIdId'] ?? null;
+        if (!empty($legacyId) && $this->isSmsManagerInstalled()) {
+            $record = SmsManager::$plugin->senderIds->getSenderIdById((int) $legacyId);
+            if ($record && $record->handle) {
+                return (string) $record->handle;
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * Build the optgroup-structured options array for the Sender ID
+     * dropdown. Format matches Craft's `forms.selectField` macro:
+     *
+     *   [
+     *       ['label' => 'Use SMS Manager default (currently: …)', 'value' => ''],
+     *       ['optgroup' => 'MPP-SMS'],
+     *       ['label' => 'A. Alghanim', 'value' => 'alghanim'],
+     *       …
+     *       ['optgroup' => 'Test Config Provider'],
+     *       ['label' => 'Test Config Sender Dev', 'value' => 'test-config-sender'],
+     *   ]
+     *
+     * Provider grouping makes the routing relationship visible without
+     * needing a separate provider dropdown — picking any sender shows
+     * which provider it dispatches through, and "Use SMS Manager default"
+     * lives at the top outside any group as a runtime reference.
+     *
+     * @return array<int, array{label?: string, value?: string, optgroup?: string}>
+     */
+    private function buildSenderIdOptions(): array
+    {
+        $options = [];
+
+        if (!$this->isSmsManagerInstalled()) {
+            return $options;
+        }
+
+        // First option: "Use SMS Manager default" sentinel, when a default
+        // is actually configured. Empty value matches `senderIdHandle`'s
+        // empty-string convention that `resolveSenderIdHandle()` reads as
+        // "follow whatever sms-manager has at dispatch time."
+        $defaultSender = SmsManager::$plugin->senderIds->getDefaultSenderId();
+        if ($defaultSender) {
+            $defaultLabel = (string) $defaultSender->name;
+            if ($defaultSender->isDev) {
+                $defaultLabel .= ' ' . Craft::t('formie-sms', '[Dev]');
+            }
+            $options[] = [
+                'value' => '',
+                'label' => Craft::t('formie-sms', 'Use SMS Manager default (currently: {sender})', [
+                    'sender' => $defaultLabel,
+                ]),
+            ];
+        }
+
+        // Group enabled senders by provider. We walk providers in their
+        // configured display order so the optgroup order in the dropdown
+        // is stable + predictable across renders.
+        $providers = SmsManager::$plugin->providers->getAllProviders(true);
+        $allSenders = SmsManager::$plugin->senderIds->getAllSenderIds(true);
+
+        $sendersByProvider = [];
+        foreach ($allSenders as $sender) {
+            if (!$sender->enabled || !$sender->handle || !$sender->providerHandle) {
+                continue;
+            }
+            $sendersByProvider[$sender->providerHandle][] = $sender;
+        }
+
+        foreach ($providers as $provider) {
+            if (!$provider->enabled || !$provider->handle) {
+                continue;
+            }
+            $providerSenders = $sendersByProvider[$provider->handle] ?? [];
+            if ($providerSenders === []) {
+                continue;
+            }
+
+            $options[] = ['optgroup' => (string) $provider->name];
+            foreach ($providerSenders as $sender) {
+                $label = (string) $sender->name;
+                if ($sender->isDev) {
+                    // Matches the `[Dev]` suffix convention from the SMS
+                    // Manager Test SMS page so dev-mode senders are
+                    // identifiable at a glance.
+                    $label .= ' ' . Craft::t('formie-sms', '[Dev]');
+                }
+                $options[] = [
+                    'value' => (string) $sender->handle,
+                    'label' => $label,
+                ];
+            }
+        }
+
+        return $options;
     }
 
     /**
@@ -159,11 +281,14 @@ class Sms extends Miscellaneous
     {
         $rules = parent::defineRules();
 
-        // Validate the following when saving form settings
+        // Validate the following when saving form settings. `senderIdHandle` is
+        // intentionally not required — empty string is the "Use SMS Manager
+        // default" sentinel and `sendPayload()`'s `resolveSenderIdHandle()`
+        // helper resolves it at dispatch time (failing loudly if no default
+        // is configured). The legacy `providerId` / `senderIdId` fields are
+        // not validated either; they're read-only compat for pre-3.10 forms.
         $rules[] = [
             [
-                'providerId',
-                'senderIdId',
                 'recipients',
                 'message',
             ],
@@ -287,38 +412,42 @@ class Sms extends Miscellaneous
      * Resolve the sender ID handle this integration should send under.
      *
      * Priority chain:
-     *  1. `$senderIdHandle === ''` → "Use SMS Manager default" sentinel,
-     *     resolve `SmsManager`'s current default at dispatch time. Returns
-     *     the default's handle on success, or `null` if no default is
+     *  1. `$senderIdHandle` set to a non-empty string → use it directly
+     *     (the form is pinned to a specific sender).
+     *  2. Legacy compat: `$senderIdId` set (pre-3.10 forms) → look up the
+     *     record and use its handle. Pre-3.10 forms hadn't yet adopted
+     *     `senderIdHandle`, so `senderIdId` is the only signal of intent.
+     *  3. Neither set, OR `senderIdHandle === ''` (the "Use SMS Manager
+     *     default" sentinel from the dropdown's first option) → resolve
+     *     SMS Manager's current default at dispatch time. Returns the
+     *     default's handle on success, or `null` if no default is
      *     configured / the configured default doesn't resolve (sms-manager
      *     8.2 fail-loud behaviour — caller surfaces an error).
-     *  2. `$senderIdHandle` set to a non-empty string → use it directly.
-     *  3. Legacy compat: `$senderIdId` set (pre-3.10 forms) → look up the
-     *     record and use its handle.
-     *  4. Nothing set anywhere → `null`.
+     *
+     * `null` and `""` get collapsed into "use default" because Formie/Yii
+     * serialise the nullable `?string` property as `null` in JSON whether
+     * the admin picked the empty-value sentinel or simply never made a
+     * choice — both states mean "follow whatever sms-manager has".
      *
      * @return string|null The handle to dispatch under, or null on failure.
      */
     private function resolveSenderIdHandle(): ?string
     {
-        // Priority 1: empty-string sentinel → SMS Manager's current default.
-        if ($this->senderIdHandle === '') {
-            $default = SmsManager::$plugin->senderIds->getDefaultSenderId();
-            return $default?->handle;
-        }
-
-        // Priority 2: explicit handle stored on this integration.
-        if ($this->senderIdHandle !== null) {
+        // Priority 1: explicit non-empty handle stored on this integration.
+        if ($this->senderIdHandle !== null && $this->senderIdHandle !== '') {
             return $this->senderIdHandle;
         }
 
-        // Priority 3: legacy int field on pre-3.10 forms — resolve to handle.
+        // Priority 2: legacy int field on pre-3.10 forms — resolve to handle.
         if ($this->senderIdId !== null) {
             $record = SmsManager::$plugin->senderIds->getSenderIdById($this->senderIdId);
             return $record?->handle;
         }
 
-        return null;
+        // Priority 3: no specific handle saved → "Use SMS Manager default"
+        // sentinel. Resolve SMS Manager's current default at dispatch time.
+        $default = SmsManager::$plugin->senderIds->getDefaultSenderId();
+        return $default?->handle;
     }
 
     /**
@@ -382,57 +511,6 @@ class Sms extends Miscellaneous
             },
             $template
         );
-    }
-
-    /**
-     * Get provider options from SMS Manager
-     */
-    private function getProviderOptions(): array
-    {
-        $options = [];
-
-        if (!$this->isSmsManagerInstalled()) {
-            return $options;
-        }
-
-        $providers = SmsManager::$plugin->providers->getAllProviders();
-
-        foreach ($providers as $provider) {
-            if ($provider->enabled) {
-                $options[] = [
-                    'value' => $provider->id,
-                    'label' => $provider->name,
-                ];
-            }
-        }
-
-        return $options;
-    }
-
-    /**
-     * Get sender ID options from SMS Manager
-     */
-    private function getSenderIdOptions(): array
-    {
-        $options = [];
-
-        if (!$this->isSmsManagerInstalled()) {
-            return $options;
-        }
-
-        $senderIds = SmsManager::$plugin->senderIds->getAllSenderIds();
-
-        foreach ($senderIds as $senderId) {
-            if ($senderId->enabled) {
-                $options[] = [
-                    'value' => $senderId->id,
-                    'label' => $senderId->name,
-                    'providerId' => $senderId->providerId,
-                ];
-            }
-        }
-
-        return $options;
     }
 
     /**
