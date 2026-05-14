@@ -60,6 +60,14 @@ class FormieSms extends Plugin
         parent::init();
         self::$plugin = $this;
 
+        // Route console requests to the plugin's `console/controllers/`
+        // namespace so `php craft formie-sms/migrate/integration-handles`
+        // (and any future console action) resolves correctly. Web requests
+        // continue using the default `controllers/` namespace.
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            $this->controllerNamespace = 'lindemannrock\\formiesms\\console\\controllers';
+        }
+
         // Bootstrap the base plugin helper
         PluginHelper::bootstrap($this, 'formieSmsHelper', [], [], [
             'installExperience' => [
