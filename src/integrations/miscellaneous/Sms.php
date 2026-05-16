@@ -431,7 +431,7 @@ class Sms extends Miscellaneous
      *
      * @return string|null The handle to dispatch under, or null on failure.
      */
-    private function resolveSenderIdHandle(): ?string
+    protected function resolveSenderIdHandle(): ?string
     {
         // Priority 1: explicit non-empty handle stored on this integration.
         if ($this->senderIdHandle !== null && $this->senderIdHandle !== '') {
@@ -462,7 +462,7 @@ class Sms extends Miscellaneous
     /**
      * Render a message template with submission data
      */
-    private function renderMessage(string $template, Submission $submission): string
+    protected function renderMessage(string $template, Submission $submission): string
     {
         // First, handle phone field subproperties that RichTextHelper doesn't support
         // Phone fields don't extend SubField, so {field:phone.countryCode} etc. don't work
