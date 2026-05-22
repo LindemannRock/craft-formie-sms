@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.10.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.9.0...v3.10.0) (2026-05-22)
+
+
+### Added
+
+* add pre-commit hook for ECS and PHPStan code quality checks ([444c1d3](https://github.com/LindemannRock/craft-formie-sms/commit/444c1d39882e70faf274a2f091fe75e01c27ea5d))
+* **i18n:** add translation issue template for reporting language problems ([ae4a117](https://github.com/LindemannRock/craft-formie-sms/commit/ae4a117fbec556f6b64f865d4ae558755d1a29ac))
+* **migrations:** add migration command for legacy senderIdId to senderIdHandle ([71336b2](https://github.com/LindemannRock/craft-formie-sms/commit/71336b24226cbd32fc57ebe533c6ece60d611b47))
+* **sms:** enhance sender ID handling and dropdown options ([dd6654a](https://github.com/LindemannRock/craft-formie-sms/commit/dd6654ac90e32f6c40321dc969665f24f4ce606d))
+* **sms:** implement sender ID handle resolution and improve recipient validation ([d0fa686](https://github.com/LindemannRock/craft-formie-sms/commit/d0fa686b5f10d414e349a8453a3c62568b30c06f))
+* **tests:** add integration tests for SMS recipient parsing and sender ID resolution ([e68803c](https://github.com/LindemannRock/craft-formie-sms/commit/e68803cd818ce86e9c72a904b6121dde3537b9df))
+
+
+### Fixed
+
+* replace relative path with rootDir in phpstan configuration ([f31788f](https://github.com/LindemannRock/craft-formie-sms/commit/f31788fc08090cbc53fed001c70591c6ba8ce6e2))
+
 ## [3.9.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.8.0...v3.9.0) (2026-05-06)
 
 
