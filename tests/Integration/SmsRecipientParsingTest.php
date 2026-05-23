@@ -18,8 +18,7 @@ use lindemannrock\formiesms\tests\TestCase;
 use verbb\formie\elements\Submission;
 
 /**
- * Coverage for {@see Sms::sendPayload()}'s post-render recipient parsing
- * (audits 6.1 + 6.2 + 1.1 — see `.internal/audit.md`).
+ * Coverage for {@see Sms::sendPayload()}'s post-render recipient parsing.
  *
  * 3.9.0 introduced a recipient-parsing change that fragmented Formie's
  * rich-text JSON when admin's recipients template had embedded commas
