@@ -12,8 +12,6 @@ return [
     'Send SMS notifications via SMS Manager on form submission.' => 'Envie notificações SMS via SMS Manager ao submeter formulários.',
     'Configure SMS providers and connect Formie submission notifications from the plugin settings area.' => 'Configure os fornecedores de SMS e ligue as notificações de submissão Formie a partir da área de definições do plugin.',
     'Open Formie SMS' => 'Abrir Formie SMS',
-    'Plugin Name' => 'Nome do plugin',
-    'The name of the plugin as it appears in the Control Panel menu' => 'O nome do plugin tal como aparece no menu do painel de controlo',
 
     // Controller messages
     'Failed to send SMS to {recipient}' => 'Falha ao enviar SMS para {recipient}.',
