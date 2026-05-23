@@ -10,17 +10,10 @@
 
 <h2 class="first">{{ 'General Settings'|t('formie-sms') }}</h2>
 
-{{ forms.textField({
-    label: 'Plugin Name'|t('formie-sms'),
-    instructions: 'The name of the plugin as it appears in the Control Panel menu'|t('formie-sms'),
-    id: 'pluginName',
-    name: 'pluginName',
-    value: settings.pluginName,
-    required: true,
-    warning: settings.isOverriddenByConfig('pluginName') ? 'This is being overridden by the `pluginName` setting in the `config/formie-sms.php` file.'|t('formie-sms'),
-    disabled: settings.isOverriddenByConfig('pluginName'),
-    errors: settings.getErrors('pluginName'),
-}) }}
+{% include 'lindemannrock-base/_partials/field-plugin-name' with {
+    settings: settings,
+    pluginHandle: 'formie-sms',
+} only %}
 
 <hr>
 
