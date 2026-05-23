@@ -8,8 +8,8 @@
 
 namespace lindemannrock\formiesms\models;
 
-use Craft;
 use craft\base\Model;
+use lindemannrock\base\traits\PluginNameSettingsTrait;
 use lindemannrock\base\traits\SettingsConfigTrait;
 use lindemannrock\base\traits\SettingsDisplayNameTrait;
 
@@ -22,6 +22,7 @@ use lindemannrock\base\traits\SettingsDisplayNameTrait;
  */
 class Settings extends Model
 {
+    use PluginNameSettingsTrait;
     use SettingsConfigTrait;
     use SettingsDisplayNameTrait;
 
@@ -35,10 +36,7 @@ class Settings extends Model
      */
     protected function defineRules(): array
     {
-        return [
-            ['pluginName', 'required'],
-            ['pluginName', 'string'],
-        ];
+        return $this->pluginNameSettingsRules();
     }
 
     /**
@@ -46,9 +44,7 @@ class Settings extends Model
      */
     public function attributeLabels(): array
     {
-        return [
-            'pluginName' => Craft::t('formie-sms', 'Plugin Name'),
-        ];
+        return $this->pluginNameSettingsLabel();
     }
 
     /**
