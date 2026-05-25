@@ -14,7 +14,7 @@ return [
     'Open Formie SMS' => 'Åbn Formie SMS',
 
     // Controller messages
-    'Failed to send SMS to {recipient}' => 'Afsendelse af SMS til {recipient} mislykkedes.',
+    'Failed to send SMS to {recipient}' => 'Afsendelse af SMS til {recipient} mislykkedes',
     'No valid recipients after rendering — SMS not sent. Check the integration\'s "Recipients" template and the submission data.' => 'Ingen gyldige modtagere efter gengivelse — SMS blev ikke sendt. Kontrollér integrationens skabelon for «Modtagere» og de indsendte data.',
     'SMS Manager plugin is not installed.' => 'Plugin-programmet SMS Manager er ikke installeret.',
 
@@ -23,13 +23,13 @@ return [
     'This is being overridden by the `pluginName` setting in the `config/formie-sms.php` file.' => 'Dette tilsidesættes af indstillingen `pluginName` i filen `config/formie-sms.php`.',
 
     // Settings: Integration Information
-    'Configure your SMS providers and sender IDs in SMS Manager, then use this integration in your Formie forms.' => 'Konfigurér dine SMS-udbydere og afsender-ID\'er i SMS Manager, og brug derefter denne integration i dine Formie-formularer.',
+    'Configure your SMS providers and sender IDs in SMS Manager, then use this integration in your Formie forms.' => 'Konfigurer dine SMS-udbydere og afsender-ID\'er i SMS Manager, og brug derefter denne integration i dine Formie-formularer.',
     'SMS Manager Integration' => 'SMS Manager-integration',
     'This plugin integrates with {link} to send SMS notifications when forms are submitted.' => 'Dette plugin integrerer med {link} for at sende SMS-notifikationer, når formularer indsendes.',
 
     // Integration: Plugin settings
     'SMS Manager' => 'SMS Manager',
-    'This integration uses SMS Manager to send SMS messages. Configure providers and sender IDs in the {link} settings.' => 'Denne integration bruger SMS Manager til at sende SMS-beskeder. Konfigurér udbydere og afsender-ID\'er i indstillingerne for {link}.',
+    'This integration uses SMS Manager to send SMS messages. Configure providers and sender IDs in the {link} settings.' => 'Denne integration bruger SMS Manager til at sende SMS-beskeder. Konfigurer udbydere og afsender-ID\'er i indstillingerne for {link}.',
 
     // Integration: Form settings
     'Any Language' => 'Alle sprog',
@@ -39,8 +39,8 @@ return [
     'Only send SMS when the form is submitted from a specific language site.' => 'Send kun SMS, når formularen indsendes fra et websted med et bestemt sprog.',
     'Provider' => 'Udbyder',
     'Recipient(s)' => 'Modtager(e)',
-    'Select a provider...' => 'Vælg en udbyder…',
-    'Select a sender ID...' => 'Vælg et afsender-ID…',
+    'Select a provider...' => 'Vælg en udbyder...',
+    'Select a sender ID...' => 'Vælg et afsender-ID...',
     'Select the SMS provider to use.' => 'Vælg den SMS-udbyder, der skal bruges.',
     'Select the sender ID to use for outgoing messages.' => 'Vælg det afsender-ID, der skal bruges til udgående beskeder.',
     'Sender ID' => 'Afsender-ID',

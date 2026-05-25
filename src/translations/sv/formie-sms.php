@@ -14,7 +14,7 @@ return [
     'Open Formie SMS' => 'Öppna Formie SMS',
 
     // Controller messages
-    'Failed to send SMS to {recipient}' => 'Det gick inte att skicka SMS till {recipient}.',
+    'Failed to send SMS to {recipient}' => 'Det gick inte att skicka SMS till {recipient}',
     'No valid recipients after rendering — SMS not sent. Check the integration\'s "Recipients" template and the submission data.' => 'Inga giltiga mottagare efter rendering — SMS skickades inte. Kontrollera integrationens mall för «Mottagare» och inlämningsdata.',
     'SMS Manager plugin is not installed.' => 'Plugin-programmet SMS Manager är inte installerat.',
 
@@ -39,8 +39,8 @@ return [
     'Only send SMS when the form is submitted from a specific language site.' => 'Skicka SMS endast när formuläret skickas in från en webbplats med ett specifikt språk.',
     'Provider' => 'Leverantör',
     'Recipient(s)' => 'Mottagare',
-    'Select a provider...' => 'Välj en leverantör…',
-    'Select a sender ID...' => 'Välj ett avsändar-ID…',
+    'Select a provider...' => 'Välj en leverantör...',
+    'Select a sender ID...' => 'Välj ett avsändar-ID...',
     'Select the SMS provider to use.' => 'Välj den SMS-leverantör som ska användas.',
     'Select the sender ID to use for outgoing messages.' => 'Välj det avsändar-ID som ska användas för utgående meddelanden.',
     'Sender ID' => 'Avsändar-ID',

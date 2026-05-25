@@ -14,7 +14,7 @@ return [
     'Open Formie SMS' => 'Abrir Formie SMS',
 
     // Controller messages
-    'Failed to send SMS to {recipient}' => 'Falha ao enviar SMS para {recipient}.',
+    'Failed to send SMS to {recipient}' => 'Falha ao enviar SMS para {recipient}',
     'No valid recipients after rendering — SMS not sent. Check the integration\'s "Recipients" template and the submission data.' => 'Nenhum destinatário válido após o processamento — SMS não enviado. Verifique o modelo «Destinatários» da integração e os dados de submissão.',
     'SMS Manager plugin is not installed.' => 'O plugin SMS Manager não está instalado.',
 
@@ -39,8 +39,8 @@ return [
     'Only send SMS when the form is submitted from a specific language site.' => 'Enviar SMS apenas quando o formulário for submetido a partir de um site num idioma específico.',
     'Provider' => 'Fornecedor',
     'Recipient(s)' => 'Destinatário(s)',
-    'Select a provider...' => 'Selecionar um fornecedor…',
-    'Select a sender ID...' => 'Selecionar um ID de remetente…',
+    'Select a provider...' => 'Selecionar um fornecedor...',
+    'Select a sender ID...' => 'Selecionar um ID de remetente...',
     'Select the SMS provider to use.' => 'Selecione o fornecedor de SMS a utilizar.',
     'Select the sender ID to use for outgoing messages.' => 'Selecione o ID de remetente a utilizar para as mensagens enviadas.',
     'Sender ID' => 'ID de remetente',

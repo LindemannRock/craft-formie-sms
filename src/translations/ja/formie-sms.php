@@ -14,7 +14,7 @@ return [
     'Open Formie SMS' => 'Formie SMS を開く',
 
     // Controller messages
-    'Failed to send SMS to {recipient}' => '{recipient} への SMS 送信に失敗しました。',
+    'Failed to send SMS to {recipient}' => '{recipient} への SMS 送信に失敗しました',
     'No valid recipients after rendering — SMS not sent. Check the integration\'s "Recipients" template and the submission data.' => 'レンダリング後に有効な受信者が見つかりません — SMS は送信されませんでした。統合の「Recipients」テンプレートと送信データを確認してください。',
     'SMS Manager plugin is not installed.' => 'SMS Manager プラグインがインストールされていません。',
 
@@ -39,8 +39,8 @@ return [
     'Only send SMS when the form is submitted from a specific language site.' => '特定の言語サイトからフォームが送信された場合のみ SMS を送信します。',
     'Provider' => 'プロバイダー',
     'Recipient(s)' => '受信者',
-    'Select a provider...' => 'プロバイダーを選択…',
-    'Select a sender ID...' => '送信者 ID を選択…',
+    'Select a provider...' => 'プロバイダーを選択...',
+    'Select a sender ID...' => '送信者 ID を選択...',
     'Select the SMS provider to use.' => '使用する SMS プロバイダーを選択してください。',
     'Select the sender ID to use for outgoing messages.' => '送信メッセージに使用する送信者 ID を選択してください。',
     'Sender ID' => '送信者 ID',

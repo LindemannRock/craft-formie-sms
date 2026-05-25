@@ -14,7 +14,7 @@ return [
     'Open Formie SMS' => 'Formie SMS openen',
 
     // Controller messages
-    'Failed to send SMS to {recipient}' => 'Verzenden van SMS naar {recipient} mislukt.',
+    'Failed to send SMS to {recipient}' => 'Verzenden van SMS naar {recipient} mislukt',
     'No valid recipients after rendering — SMS not sent. Check the integration\'s "Recipients" template and the submission data.' => 'Geen geldige ontvangers na het renderen — SMS niet verzonden. Controleer de sjabloon "Ontvangers" van de integratie en de ingediende gegevens.',
     'SMS Manager plugin is not installed.' => 'De SMS Manager-plugin is niet geïnstalleerd.',
 
@@ -39,8 +39,8 @@ return [
     'Only send SMS when the form is submitted from a specific language site.' => 'Stuur alleen SMS wanneer het formulier wordt ingediend vanuit een specifieke taalsite.',
     'Provider' => 'Provider',
     'Recipient(s)' => 'Ontvanger(s)',
-    'Select a provider...' => 'Selecteer een provider…',
-    'Select a sender ID...' => 'Selecteer een afzender-ID…',
+    'Select a provider...' => 'Selecteer een provider...',
+    'Select a sender ID...' => 'Selecteer een afzender-ID...',
     'Select the SMS provider to use.' => 'Selecteer de te gebruiken SMS-provider.',
     'Select the sender ID to use for outgoing messages.' => 'Selecteer de afzender-ID voor uitgaande berichten.',
     'Sender ID' => 'Afzender-ID',

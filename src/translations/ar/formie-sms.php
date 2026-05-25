@@ -14,7 +14,7 @@ return [
     'Open Formie SMS' => 'فتح Formie SMS',
 
     // Controller messages
-    'Failed to send SMS to {recipient}' => 'فشل إرسال SMS إلى {recipient}.',
+    'Failed to send SMS to {recipient}' => 'فشل إرسال SMS إلى {recipient}',
     'No valid recipients after rendering — SMS not sent. Check the integration\'s "Recipients" template and the submission data.' => 'لا يوجد مستلمون صالحون بعد المعالجة — لم يُرسَل SMS. تحقق من قالب «المستلمون» في التكامل وبيانات الإرسال.',
     'SMS Manager plugin is not installed.' => 'إضافة SMS Manager غير مثبتة.',
 
@@ -39,8 +39,8 @@ return [
     'Only send SMS when the form is submitted from a specific language site.' => 'أرسل SMS فقط عند تقديم النموذج من موقع بلغة محددة.',
     'Provider' => 'الموفر',
     'Recipient(s)' => 'المستلم(ون)',
-    'Select a provider...' => 'اختر موفرًا…',
-    'Select a sender ID...' => 'اختر معرف مرسل…',
+    'Select a provider...' => 'اختر موفرًا...',
+    'Select a sender ID...' => 'اختر معرف مرسل...',
     'Select the SMS provider to use.' => 'اختر موفر SMS المراد استخدامه.',
     'Select the sender ID to use for outgoing messages.' => 'اختر معرف المرسل لاستخدامه في الرسائل الصادرة.',
     'Sender ID' => 'معرف المرسل',
