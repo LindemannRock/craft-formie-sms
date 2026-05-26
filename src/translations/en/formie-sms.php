@@ -20,7 +20,6 @@ return [
 
     // Settings: General
     'General Settings' => 'General Settings',
-    'This is being overridden by the `pluginName` setting in the `config/formie-sms.php` file.' => 'This is being overridden by the `pluginName` setting in the `config/formie-sms.php` file.',
 
     // Settings: Integration Information
     'Configure your SMS providers and sender IDs in SMS Manager, then use this integration in your Formie forms.' => 'Configure your SMS providers and sender IDs in SMS Manager, then use this integration in your Formie forms.',
@@ -35,14 +34,8 @@ return [
     'Any Language' => 'Any Language',
     'Language Filter' => 'Language Filter',
     'Message' => 'Message',
-    'No sender IDs for this provider' => 'No sender IDs for this provider',
     'Only send SMS when the form is submitted from a specific language site.' => 'Only send SMS when the form is submitted from a specific language site.',
-    'Provider' => 'Provider',
     'Recipient(s)' => 'Recipient(s)',
-    'Select a provider...' => 'Select a provider...',
-    'Select a sender ID...' => 'Select a sender ID...',
-    'Select the SMS provider to use.' => 'Select the SMS provider to use.',
-    'Select the sender ID to use for outgoing messages.' => 'Select the sender ID to use for outgoing messages.',
     'Sender ID' => 'Sender ID',
     'The SMS message content. Use form field variables to personalize.' => 'The SMS message content. Use form field variables to personalize.',
     'Use a comma-separated list for multiple recipients.' => 'Use a comma-separated list for multiple recipients.',

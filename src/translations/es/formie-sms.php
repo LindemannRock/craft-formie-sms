@@ -20,7 +20,6 @@ return [
 
     // Settings: General
     'General Settings' => 'Configuración general',
-    'This is being overridden by the `pluginName` setting in the `config/formie-sms.php` file.' => 'Esta configuración está siendo reemplazada por el parámetro `pluginName` en el archivo `config/formie-sms.php`.',
 
     // Settings: Integration Information
     'Configure your SMS providers and sender IDs in SMS Manager, then use this integration in your Formie forms.' => 'Configure sus proveedores de SMS e ID de remitente en SMS Manager y, a continuación, utilice esta integración en sus formularios de Formie.',
@@ -35,14 +34,8 @@ return [
     'Any Language' => 'Cualquier idioma',
     'Language Filter' => 'Filtro de idioma',
     'Message' => 'Mensaje',
-    'No sender IDs for this provider' => 'No hay ID de remitente para este proveedor',
     'Only send SMS when the form is submitted from a specific language site.' => 'Enviar SMS solo cuando el formulario se envíe desde un sitio en un idioma específico.',
-    'Provider' => 'Proveedor',
     'Recipient(s)' => 'Destinatario(s)',
-    'Select a provider...' => 'Seleccionar un proveedor...',
-    'Select a sender ID...' => 'Seleccionar un ID de remitente...',
-    'Select the SMS provider to use.' => 'Seleccione el proveedor de SMS que desea utilizar.',
-    'Select the sender ID to use for outgoing messages.' => 'Seleccione el ID de remitente para los mensajes salientes.',
     'Sender ID' => 'ID de remitente',
     'The SMS message content. Use form field variables to personalize.' => 'El contenido del mensaje SMS. Utilice variables de campos del formulario para personalizarlo.',
     'Use a comma-separated list for multiple recipients.' => 'Use una lista separada por comas para varios destinatarios.',

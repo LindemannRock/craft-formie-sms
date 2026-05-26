@@ -20,7 +20,6 @@ return [
 
     // Settings: General
     'General Settings' => 'Generelle innstillinger',
-    'This is being overridden by the `pluginName` setting in the `config/formie-sms.php` file.' => 'Dette overstyres av innstillingen `pluginName` i filen `config/formie-sms.php`.',
 
     // Settings: Integration Information
     'Configure your SMS providers and sender IDs in SMS Manager, then use this integration in your Formie forms.' => 'Konfigurer SMS-leverandørene og avsender-ID-ene dine i SMS Manager, og bruk deretter denne integrasjonen i Formie-skjemaene dine.',
@@ -35,14 +34,8 @@ return [
     'Any Language' => 'Alle språk',
     'Language Filter' => 'Språkfilter',
     'Message' => 'Melding',
-    'No sender IDs for this provider' => 'Ingen avsender-ID-er for denne leverandøren',
     'Only send SMS when the form is submitted from a specific language site.' => 'Send kun SMS når skjemaet sendes inn fra et nettsted med et bestemt språk.',
-    'Provider' => 'Leverandør',
     'Recipient(s)' => 'Mottaker(e)',
-    'Select a provider...' => 'Velg en leverandør...',
-    'Select a sender ID...' => 'Velg en avsender-ID...',
-    'Select the SMS provider to use.' => 'Velg den SMS-leverandøren som skal brukes.',
-    'Select the sender ID to use for outgoing messages.' => 'Velg avsender-ID-en som skal brukes for utgående meldinger.',
     'Sender ID' => 'Avsender-ID',
     'The SMS message content. Use form field variables to personalize.' => 'Innholdet i SMS-meldingen. Bruk skjemafeltvariabler for å tilpasse.',
     'Use a comma-separated list for multiple recipients.' => 'Bruk en kommaseparert liste for flere mottakere.',

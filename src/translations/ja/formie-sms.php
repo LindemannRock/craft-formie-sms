@@ -20,7 +20,6 @@ return [
 
     // Settings: General
     'General Settings' => '一般設定',
-    'This is being overridden by the `pluginName` setting in the `config/formie-sms.php` file.' => '`config/formie-sms.php` ファイルの `pluginName` 設定によってオーバーライドされています。',
 
     // Settings: Integration Information
     'Configure your SMS providers and sender IDs in SMS Manager, then use this integration in your Formie forms.' => 'SMS Manager で SMS プロバイダーと送信者 ID を設定し、Formie フォームでこの統合を使用してください。',
@@ -35,14 +34,8 @@ return [
     'Any Language' => 'すべての言語',
     'Language Filter' => '言語フィルター',
     'Message' => 'メッセージ',
-    'No sender IDs for this provider' => 'このプロバイダーの送信者 ID がありません',
     'Only send SMS when the form is submitted from a specific language site.' => '特定の言語サイトからフォームが送信された場合のみ SMS を送信します。',
-    'Provider' => 'プロバイダー',
     'Recipient(s)' => '受信者',
-    'Select a provider...' => 'プロバイダーを選択...',
-    'Select a sender ID...' => '送信者 ID を選択...',
-    'Select the SMS provider to use.' => '使用する SMS プロバイダーを選択してください。',
-    'Select the sender ID to use for outgoing messages.' => '送信メッセージに使用する送信者 ID を選択してください。',
     'Sender ID' => '送信者 ID',
     'The SMS message content. Use form field variables to personalize.' => 'SMS メッセージの内容です。フォームフィールドの変数を使用してパーソナライズできます。',
     'Use a comma-separated list for multiple recipients.' => '複数の受信者にはカンマ区切りのリストを使用してください。',

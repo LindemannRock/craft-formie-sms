@@ -20,7 +20,6 @@ return [
 
     // Settings: General
     'General Settings' => 'Allmänna inställningar',
-    'This is being overridden by the `pluginName` setting in the `config/formie-sms.php` file.' => 'Detta åsidosätts av inställningen `pluginName` i filen `config/formie-sms.php`.',
 
     // Settings: Integration Information
     'Configure your SMS providers and sender IDs in SMS Manager, then use this integration in your Formie forms.' => 'Konfigurera dina SMS-leverantörer och avsändar-ID:n i SMS Manager och använd sedan den här integrationen i dina Formie-formulär.',
@@ -35,14 +34,8 @@ return [
     'Any Language' => 'Valfritt språk',
     'Language Filter' => 'Språkfilter',
     'Message' => 'Meddelande',
-    'No sender IDs for this provider' => 'Inga avsändar-ID:n för den här leverantören',
     'Only send SMS when the form is submitted from a specific language site.' => 'Skicka SMS endast när formuläret skickas in från en webbplats med ett specifikt språk.',
-    'Provider' => 'Leverantör',
     'Recipient(s)' => 'Mottagare',
-    'Select a provider...' => 'Välj en leverantör...',
-    'Select a sender ID...' => 'Välj ett avsändar-ID...',
-    'Select the SMS provider to use.' => 'Välj den SMS-leverantör som ska användas.',
-    'Select the sender ID to use for outgoing messages.' => 'Välj det avsändar-ID som ska användas för utgående meddelanden.',
     'Sender ID' => 'Avsändar-ID',
     'The SMS message content. Use form field variables to personalize.' => 'Innehållet i SMS-meddelandet. Använd formulärfältsvariabler för att anpassa.',
     'Use a comma-separated list for multiple recipients.' => 'Använd en kommaseparerad lista för flera mottagare.',
