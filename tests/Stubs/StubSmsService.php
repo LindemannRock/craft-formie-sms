@@ -39,7 +39,7 @@ final class StubSmsService extends SmsService
      * Recorded calls to {@see sendWithHandle()}, in order. Each entry
      * captures the full positional tuple the integration passes through.
      *
-     * @var list<array{to: string, message: string, senderIdHandle: string, language: string, sourcePlugin: ?string, sourceElementId: ?int}>
+     * @var list<array{to: string, message: string, senderIdHandle: string, language: string, sourcePlugin: ?string, sourceElementId: ?int, siteId: ?int}>
      */
     public array $sentCalls = [];
 
@@ -57,6 +57,7 @@ final class StubSmsService extends SmsService
         string $language = 'en',
         ?string $sourcePlugin = null,
         ?int $sourceElementId = null,
+        ?int $siteId = null,
     ): bool {
         $this->sentCalls[] = [
             'to' => $to,
@@ -65,6 +66,7 @@ final class StubSmsService extends SmsService
             'language' => $language,
             'sourcePlugin' => $sourcePlugin,
             'sourceElementId' => $sourceElementId,
+            'siteId' => $siteId,
         ];
 
         return $this->returnValue;
