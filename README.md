@@ -157,6 +157,36 @@ The Sender ID dropdown automatically filters based on the selected Provider:
 - Changing Provider updates available Sender IDs
 - Both must be selected for the integration to work
 
+## Console Commands
+
+Use the plugin-level help command to see available Formie SMS commands and focused guidance:
+
+```bash
+ddev craft formie-sms/help
+ddev craft formie-sms/help migrate/integration-handles
+```
+
+Craft's native command help is still available when you need the exact Yii option signature:
+
+```bash
+ddev craft help formie-sms/migrate/integration-handles
+```
+
+### Integration Handle Migration
+
+After upgrading from older Formie SMS versions that stored SMS Manager sender IDs by numeric ID, run:
+
+```bash
+ddev craft formie-sms/migrate/integration-handles
+```
+
+The command scans Formie form settings for legacy `senderIdId` values and adds the matching `senderIdHandle` when the sender still exists in SMS Manager.
+
+Notes:
+- The command is idempotent and safe to re-run.
+- Legacy `senderIdId` and `providerId` values are left in place for rollback safety.
+- Forms with deleted sender references are reported as unresolved and should be fixed by re-picking a sender in the Formie UI.
+
 ## How It Works
 
 1. User submits a Formie form
