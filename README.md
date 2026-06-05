@@ -71,6 +71,8 @@ In the Control Panel, go to Settings → Plugins and click "Install" for Formie 
 
 ## Configuration
 
+Plugin settings at **Settings → Plugins → Formie SMS** are validated inline and are not saved when invalid.
+
 ### Prerequisites
 
 Before using Formie SMS, ensure SMS Manager is configured with:
