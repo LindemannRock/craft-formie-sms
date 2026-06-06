@@ -27,7 +27,10 @@ final class HelpController extends AbstractHelpController
         return [
             'title' => 'Formie SMS',
             'pluginHandle' => 'formie-sms',
-            'commandPrefix' => 'ddev craft',
+            'commandPrefixes' => [
+                'php craft',
+                'ddev craft',
+            ],
             'summary' => 'Use these commands to migrate older Formie SMS integration settings to handle-based SMS Manager sender IDs.',
             'common' => [
                 'migrate/integration-handles',
