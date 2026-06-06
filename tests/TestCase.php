@@ -55,26 +55,12 @@ abstract class TestCase extends IntegrationTestCase
 
     protected SenderIdsService $senderIds;
 
-    private int $seedCounter = 0;
-
-    /**
-     * Element ids of every Formie Form seeded during the current test.
-     * Drained on tearDown via the elements API so the element + elements_sites
-     * + formie_forms rows all go together; pivoting on `formie_forms.handle`
-     * alone would leave orphan elements rows behind.
-     *
-     * @var list<int>
-     */
-    private array $seededFormIds = [];
-
     protected function setUp(): void
     {
         parent::setUp();
         $plugin = SmsManager::$plugin;
         $this->providers = $plugin->providers;
         $this->senderIds = $plugin->senderIds;
-        $this->seedCounter = 0;
-        $this->seededFormIds = [];
         $this->purgeTestRows();
     }
 
@@ -99,8 +85,7 @@ abstract class TestCase extends IntegrationTestCase
      */
     protected function seedProvider(array $overrides = []): ProviderRecord
     {
-        $this->seedCounter++;
-        $handle = $overrides['handle'] ?? self::MARKER . 'provider_' . $this->seedCounter;
+        $handle = $overrides['handle'] ?? $this->nextTestMarker(self::MARKER, 'provider');
 
         $record = new ProviderRecord();
         $record->name = $overrides['name'] ?? $handle;
@@ -129,8 +114,7 @@ abstract class TestCase extends IntegrationTestCase
      */
     protected function seedSenderId(ProviderRecord $provider, array $overrides = []): SenderIdRecord
     {
-        $this->seedCounter++;
-        $handle = $overrides['handle'] ?? self::MARKER . 'sender_' . $this->seedCounter;
+        $handle = $overrides['handle'] ?? $this->nextTestMarker(self::MARKER, 'sender');
 
         $record = new SenderIdRecord();
         $record->providerId = $provider->id;
@@ -164,7 +148,6 @@ abstract class TestCase extends IntegrationTestCase
      */
     protected function purgeTestRows(): void
     {
-        $this->purgeSeededForms();
         $this->purgeRowsByMarker(SenderIdRecord::tableName(), 'handle', self::MARKER);
         $this->purgeRowsByMarker(ProviderRecord::tableName(), 'handle', self::MARKER);
     }
@@ -178,9 +161,9 @@ abstract class TestCase extends IntegrationTestCase
      * Formie's `EVENT_BEFORE_SAVE` / `afterSave` hooks, which is what makes
      * `Form::find()->id(...)` return the seeded form on the way back out.
      *
-     * The returned id is tracked so {@see purgeSeededForms()} can drop the
-     * full element triplet (elements + elements_sites + formie_forms) on
-     * tearDown.
+     * Saved through {@see saveTestElement()} so base test cleanup can hard
+     * delete the full element triplet (elements + elements_sites +
+     * formie_forms) on tearDown.
      *
      * @param array<string, array<string, mixed>> $integrations
      *     Per-handle integration blocks the way Formie serialises them on
@@ -188,38 +171,14 @@ abstract class TestCase extends IntegrationTestCase
      */
     protected function seedFormieForm(array $integrations, ?string $titleSuffix = null): int
     {
-        $this->seedCounter++;
-        $titleSuffix ??= 'form_' . $this->seedCounter;
-        $title = self::MARKER . $titleSuffix;
-
         $form = new FormieForm();
-        $form->title = $title;
-        $form->handle = self::MARKER . 'h' . $this->seedCounter;
+        $form->title = $titleSuffix !== null ? self::MARKER . $titleSuffix : $this->nextTestMarker(self::MARKER, 'form');
+        $form->handle = $this->nextTestMarker(self::MARKER . 'h', 'form');
         $form->siteId = Craft::$app->getSites()->getPrimarySite()->id;
         $form->setSettings(['integrations' => $integrations], false);
 
-        $ok = Craft::$app->getElements()->saveElement($form, false);
-        self::assertTrue($ok, 'Seeded Formie Form must save — errors: ' . json_encode($form->getErrors()));
-
-        $this->seededFormIds[] = (int) $form->id;
+        $this->saveTestElement($form, false);
 
         return (int) $form->id;
-    }
-
-    /**
-     * Drop every Formie Form element seeded during this test (element row +
-     * elements_sites + formie_forms) via Craft's element API hard delete.
-     * Cascades through the FK constraints; equivalent to a marker purge on
-     * three tables in one call.
-     */
-    private function purgeSeededForms(): void
-    {
-        foreach ($this->seededFormIds as $formId) {
-            $form = Craft::$app->getElements()->getElementById($formId);
-            if ($form !== null) {
-                Craft::$app->getElements()->deleteElement($form, true);
-            }
-        }
-        $this->seededFormIds = [];
     }
 }
