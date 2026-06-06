@@ -53,7 +53,6 @@ class Settings extends Model
             model: $this,
             postedValues: $values,
             allowedAttributes: $this->settingsPostAttributes(),
-            isOverridden: fn(string $attribute): bool => $this->isOverriddenByConfig($attribute),
         );
 
         if ($result->hasErrors) {
