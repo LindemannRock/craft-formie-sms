@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.11.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.10.0...v3.11.0) (2026-06-07)
+
+
+### Added
+
+* add siteId to SMS submission payload ([4d5cc49](https://github.com/LindemannRock/craft-formie-sms/commit/4d5cc494dc2acf62b442b5f092e0872e65be9db6))
+* add static analysis script for CI workflow ([0f16cb5](https://github.com/LindemannRock/craft-formie-sms/commit/0f16cb5eafa71640def47d6eda075aa5b2ce9656))
+* **cli:** add HelpController for cli command assistance ([4ad8789](https://github.com/LindemannRock/craft-formie-sms/commit/4ad8789becb0aad9790af934e601bbec3c7cd06d))
+* **settings:** add settings post error handling in setAttributes method ([2670a14](https://github.com/LindemannRock/craft-formie-sms/commit/2670a14ef3074d9662a01a35a756041b8974bace))
+
+
+### Fixed
+
+* **i18n:** correct SMS failure message punctuation in translations ([ce5549e](https://github.com/LindemannRock/craft-formie-sms/commit/ce5549e10de13e2db1749494b4812ba8d3544d8a))
+
 ## [3.10.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.9.0...v3.10.0) - 2026-05-22
 
 
