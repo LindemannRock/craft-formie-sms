@@ -1,0 +1,52 @@
+# Translations
+
+Formie SMS includes full translations for 12 languages out of the box.
+
+## Supported languages
+
+| Language | Code |
+|----------|------|
+| English | `en` |
+| German | `de` |
+| French | `fr` |
+| Dutch | `nl` |
+| Spanish | `es` |
+| Arabic | `ar` |
+| Italian | `it` |
+| Portuguese | `pt` |
+| Japanese | `ja` |
+| Swedish | `sv` |
+| Danish | `da` |
+| Norwegian | `no` |
+
+Translations are automatically applied based on the user's preferred language in Craft's Control Panel settings.
+
+## Overriding translations
+
+You can override any translation string by creating a static translation file in your project:
+
+```
+translations/
+└── de/
+    └── formie-sms.php
+```
+
+```php
+<?php
+
+return [
+    'Sender ID' => 'Absenderkennung',  // Override the default
+];
+```
+
+Only the keys you include in your override file are replaced — all other strings use the plugin's built-in translations.
+
+See [Craft's Static Translation Strings](https://craftcms.com/docs/5.x/system/sites.html#static-message-translations) for more details.
+
+## Contributing translations
+
+If you find a translation error or want to improve a translation, please [open an issue](https://github.com/LindemannRock/craft-formie-sms/issues) with:
+
+- The language affected
+- The current (incorrect) string
+- Your suggested correction

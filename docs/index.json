@@ -1,0 +1,7 @@
+{
+    "plugin": {
+        "name": "Formie SMS",
+        "handle": "formie-sms",
+        "description": "SMS integration for Formie — send SMS notifications on form submission via SMS Manager."
+    }
+}

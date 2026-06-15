@@ -1,0 +1,21 @@
+{
+    "generated": [
+        "developers/twig-globals.md"
+    ],
+    "manual": [
+        "get-started/requirements.md",
+        "get-started/installation.md",
+        "get-started/quickstart.md",
+        "get-started/configuration.md",
+        "feature-tour/overview.md",
+        "feature-tour/sms-notifications.md",
+        "feature-tour/phone-variables.md",
+        "developers/console-commands.md",
+        "developers/events.md",
+        "developers/integrations.md",
+        "developers/shared-features.md",
+        "resources/troubleshooting.md",
+        "resources/translations.md"
+    ],
+    "lastGenerated": "2026-06-15T13:17:01+03:00"
+}
