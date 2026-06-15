@@ -28,7 +28,7 @@ return [
 
     // Integration: Plugin settings
     'SMS Manager' => 'SMS Manager',
-    'This integration uses SMS Manager to send SMS messages. Configure providers and sender IDs in the {link} settings.' => 'Esta integración utiliza SMS Manager para enviar mensajes SMS. Configure los proveedores y los ID de remitente en los ajustes de {link}.',
+    'This integration uses SMS Manager to send SMS messages. Configure providers and sender IDs in the {link} settings.' => 'Esta integración utiliza SMS Manager para enviar mensajes SMS. Configure los proveedores y los ID de remitente en la configuración de {link}.',
 
     // Integration: Form settings
     'Any Language' => 'Cualquier idioma',

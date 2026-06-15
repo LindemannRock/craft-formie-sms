@@ -15,7 +15,7 @@ return [
 
     // Controller messages
     'Failed to send SMS to {recipient}' => '{recipient} への SMS 送信に失敗しました',
-    'No valid recipients after rendering — SMS not sent. Check the integration\'s "Recipients" template and the submission data.' => 'レンダリング後に有効な受信者が見つかりません — SMS は送信されませんでした。統合の「Recipients」テンプレートと送信データを確認してください。',
+    'No valid recipients after rendering — SMS not sent. Check the integration\'s "Recipients" template and the submission data.' => 'レンダリング後に有効な受信者が見つかりません — SMS は送信されませんでした。統合の「受信者」テンプレートと送信データを確認してください。',
     'SMS Manager plugin is not installed.' => 'SMS Manager プラグインがインストールされていません。',
 
     // Settings: General
