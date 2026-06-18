@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.11.1](https://github.com/LindemannRock/craft-formie-sms/compare/v3.11.0...v3.11.1) (2026-06-18)
+
+
+### Fixed
+
+* **i18n:** correct Spanish and Japanese translations for SMS Manager settings ([d4518b7](https://github.com/LindemannRock/craft-formie-sms/commit/d4518b713c35f6d9f8bb8bc65477793767c25064))
+
 ## [3.11.0](https://github.com/LindemannRock/craft-formie-sms/compare/v3.10.0...v3.11.0) - 2026-06-07
 
 
