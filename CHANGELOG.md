@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.11.1](https://github.com/LindemannRock/craft-formie-sms/compare/v3.11.0...v3.11.1) (2026-06-18)
+## [3.11.1](https://github.com/LindemannRock/craft-formie-sms/compare/v3.11.0...v3.11.1) - 2026-06-18
 
 
 ### Fixed
