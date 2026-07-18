@@ -7,7 +7,7 @@
 [![Formie](https://img.shields.io/badge/Formie-3.0+-purple.svg)](https://verbb.io/craft-plugins/formie)
 [![SMS Manager](https://img.shields.io/badge/SMS%20Manager-5.0+-green.svg)](https://github.com/LindemannRock/craft-sms-manager)
 [![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://php.net/)
-[![License](https://img.shields.io/packagist/l/lindemannrock/craft-formie-sms.svg)](LICENSE)
+[![License](https://img.shields.io/packagist/l/lindemannrock/craft-formie-sms.svg)](LICENSE.md)
 
 A Craft CMS plugin that integrates Verbb's Formie with SMS Manager, enabling SMS notifications on form submission with multi-provider support and language filtering.
 
