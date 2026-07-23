@@ -3,7 +3,6 @@
 {% if settings is defined and settings.hasErrors() %}
     {{ include('lindemannrock-base/_partials/error-summary', {
         errors: settings.getErrors(),
-        linkMode: 'field-id',
     }) }}
 {% endif %}
 
