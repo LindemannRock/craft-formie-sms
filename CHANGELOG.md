@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.11.2](https://github.com/LindemannRock/craft-formie-sms/compare/v3.11.1...v3.11.2) (2026-09-16)
+
+
+### Fixed
+
+* remove unused linkMode parameter from error summary ([b79bada](https://github.com/LindemannRock/craft-formie-sms/commit/b79bada2e92a0e38f2ee10dcff09968b84dc5180))
+* remove unused translationCategory from error summary ([3c0ec1d](https://github.com/LindemannRock/craft-formie-sms/commit/3c0ec1db268ca793024692576670d18616253b45))
+* **sms:** harden delivery and verification ([001e46a](https://github.com/LindemannRock/craft-formie-sms/commit/001e46af6934b00ef6b2d322a5041baaa1b6f5f8))
+
 ## [3.11.1](https://github.com/LindemannRock/craft-formie-sms/compare/v3.11.0...v3.11.1) - 2026-06-18
 
 
