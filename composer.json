@@ -12,7 +12,7 @@
 		"sms",
 		"integration"
 	],
-	"license": "proprietary",
+	"license": "MIT",
 	"authors": [
 		{
 			"name": "Bilal Hary Lindemann",

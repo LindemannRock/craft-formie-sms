@@ -11,10 +11,6 @@
 
 A Craft CMS plugin that integrates Verbb's Formie with SMS Manager, enabling SMS notifications on form submission with multi-provider support and language filtering.
 
-## License
-
-This is a commercial plugin licensed under the [Craft License](https://craftcms.github.io/license/). It will be available on the [Craft Plugin Store](https://plugins.craftcms.com) soon. See [LICENSE.md](LICENSE.md) for details.
-
 ## ⚠️ Pre-Release
 
 This plugin is in active development and not yet available on the Craft Plugin Store. Features and APIs may change before the initial public release.
@@ -70,7 +66,7 @@ Full documentation is available in the [docs](docs/) folder.
 
 ## License
 
-This plugin is licensed under the [Craft License](https://craftcms.github.io/license/). See [LICENSE.md](LICENSE.md) for details.
+This plugin is licensed under the MIT License. See [LICENSE.md](LICENSE.md) for details.
 
 ---
 
