@@ -42,7 +42,7 @@ We'll call you back on {field:phone.countryCode} {field:phone.number}.
 > [!NOTE]
 > Depending on your Formie version, the variable picker may insert either a colon or a dot separator (`{field:phone}` or `{field.phone}`). Both are handled — use whatever the picker gives you.
 
-![The Recipient(s) field with a phone variable](images/phone-variables-recipients.webp)
+![The Recipient(s) field with a phone variable](../images/phone-variables-recipients.webp)
 
 ## Next steps
 

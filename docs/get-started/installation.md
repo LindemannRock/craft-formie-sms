@@ -26,15 +26,11 @@ composer require lindemannrock/craft-formie-sms && php craft plugin/install form
 ddev composer require lindemannrock/craft-formie-sms && ddev craft plugin/install formie-sms
 ```
 
-## Copy Config File (Optional)
+## Post-Install Setup
 
-To rename the plugin in the Control Panel from a config file, copy the sample config to your project:
+Install and enable Formie and SMS Manager in the Control Panel under **Settings → Plugins**. Then configure an enabled provider and sender ID in SMS Manager before connecting a Formie form.
 
-```bash
-cp vendor/lindemannrock/craft-formie-sms/src/config.php config/formie-sms.php
-```
-
-See [Configuration](configuration.md) for the available options.
+See [Configuration](configuration.md) if you want to rename Formie SMS in the Control Panel.
 
 ## Quick Start
 

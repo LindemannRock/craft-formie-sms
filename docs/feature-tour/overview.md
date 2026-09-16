@@ -36,7 +36,7 @@ That means there's almost nothing to configure in the plugin itself. Everything 
 | Delivery logs and analytics | SMS Manager → SMS Logs / Analytics |
 | The plugin's display name | Settings → Plugins → Formie SMS |
 
-![The SMS integration settings on a Formie form](images/overview-form-settings.webp)
+![The SMS integration settings on a Formie form](../images/overview-form-settings.webp)
 
 ## Next steps
 

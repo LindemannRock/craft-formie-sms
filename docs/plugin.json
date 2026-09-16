@@ -2,7 +2,7 @@
     "name": "Formie SMS",
     "handle": "formie-sms",
     "description": "SMS integration for Formie - Send SMS notifications on form submission via SMS Manager",
-    "version": "3.11.0",
+    "version": "3.11.2",
     "developer": "LindemannRock",
     "developerUrl": "https://lindemannrock.com",
     "documentationUrl": "https://github.com/LindemannRock/craft-formie-sms/blob/main/README.md"
