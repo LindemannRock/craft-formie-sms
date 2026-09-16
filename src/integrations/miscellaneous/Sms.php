@@ -12,6 +12,7 @@ use Craft;
 use craft\helpers\UrlHelper;
 use League\HTMLToMarkdown\HtmlConverter;
 use lindemannrock\base\helpers\PluginHelper;
+use lindemannrock\smsmanager\helpers\SmsPrivacyHelper;
 use lindemannrock\smsmanager\SmsManager;
 use verbb\formie\base\Integration;
 use verbb\formie\base\Miscellaneous;
@@ -352,7 +353,7 @@ class Sms extends Miscellaneous
             // No-op for already-clean inputs like `97255330` or `+96597255330`.
             $token = FormiePhone::toPhoneString($token);
             if (!preg_match('/^\+?[0-9]{6,15}$/', $token)) {
-                Craft::warning("Skipping invalid SMS recipient '{$token}' (rendered recipients: '{$recipientsRaw}')", __METHOD__);
+                Craft::warning('Skipping invalid SMS recipient (reference: ' . SmsPrivacyHelper::recipientReference($token) . ')', __METHOD__);
                 continue;
             }
             $recipients[] = $token;
@@ -383,6 +384,7 @@ class Sms extends Miscellaneous
         // a silent substitution (sms-manager audit 8.2).
         $smsService = SmsManager::$plugin->sms;
 
+        $allSent = true;
         foreach ($recipients as $recipient) {
             try {
                 $result = $smsService->sendWithHandle(
@@ -396,17 +398,20 @@ class Sms extends Miscellaneous
                 );
 
                 if (!$result) {
+                    $allSent = false;
+                    $recipient = SmsPrivacyHelper::recipientReference($recipient);
                     Integration::error($this, Craft::t('formie-sms', 'Failed to send SMS to {recipient}', [
                         'recipient' => $recipient,
                     ]));
                 }
             } catch (\Throwable $e) {
+                $allSent = false;
                 $exception = $e instanceof \Exception ? $e : new \Exception($e->getMessage(), (int) $e->getCode(), $e);
                 Integration::apiError($this, $exception);
             }
         }
 
-        return true;
+        return $allSent;
     }
 
     /**

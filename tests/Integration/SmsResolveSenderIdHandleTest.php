@@ -13,7 +13,6 @@ namespace lindemannrock\formiesms\tests\Integration;
 use lindemannrock\formiesms\integrations\miscellaneous\Sms;
 use lindemannrock\formiesms\tests\Stubs\StubSenderIdsService;
 use lindemannrock\formiesms\tests\TestCase;
-use lindemannrock\smsmanager\records\SenderIdRecord;
 
 /**
  * Coverage for {@see Sms::resolveSenderIdHandle()} (3.10.0+).
@@ -163,13 +162,16 @@ final class SmsResolveSenderIdHandleTest extends TestCase
      * "extend the real class" pattern sms-manager uses for
      * `BaseProvider::normalizeAndValidatePhone`.
      */
-    private function makeSms(): Sms
+    private function makeSms(): ExposedSenderResolutionSms
     {
-        return new class extends Sms {
-            public function exposedResolveSenderIdHandle(): ?string
-            {
-                return $this->resolveSenderIdHandle();
-            }
-        };
+        return new ExposedSenderResolutionSms();
+    }
+}
+
+final class ExposedSenderResolutionSms extends Sms
+{
+    public function exposedResolveSenderIdHandle(): ?string
+    {
+        return $this->resolveSenderIdHandle();
     }
 }

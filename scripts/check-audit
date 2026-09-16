@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+package_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if [[ -f "$package_root/composer.lock" ]]; then
+    cd "$package_root"
+    composer --no-plugins audit --locked --abandoned=report
+    exit
+fi
+
+temp_root="$(cd "${TMPDIR:-/tmp}" && pwd -P)"
+case "$temp_root" in
+    /|"${HOME:-}")
+        echo "Refusing unsafe audit temporary root: $temp_root" >&2
+        exit 1
+        ;;
+esac
+owned_dir="$(mktemp -d "$temp_root/formie-sms-audit.XXXXXXXX")"
+
+cleanup_audit() {
+    run_exit=$?
+    trap - EXIT INT TERM HUP
+    cleanup_exit=0
+    if [[ -d "$owned_dir" && "$(dirname "$owned_dir")" == "$temp_root" && "$(basename "$owned_dir")" == formie-sms-audit.* ]]; then
+        rm -rf -- "$owned_dir" || cleanup_exit=$?
+        if [[ -e "$owned_dir" ]]; then
+            echo "Failed to remove owned audit directory: $owned_dir" >&2
+            cleanup_exit=1
+        fi
+    else
+        echo "Refusing unexpected audit cleanup target: $owned_dir" >&2
+        cleanup_exit=1
+    fi
+    if [[ "$run_exit" -ne 0 ]]; then
+        exit "$run_exit"
+    fi
+    exit "$cleanup_exit"
+}
+trap cleanup_audit EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+trap 'exit 129' HUP
+
+cp "$package_root/composer.json" "$owned_dir/composer.json"
+cd "$owned_dir"
+composer --no-plugins update --no-install --no-scripts --quiet
+composer --no-plugins audit --locked --abandoned=report

@@ -50,6 +50,9 @@ final class StubSmsService extends SmsService
      */
     public bool $returnValue = true;
 
+    /** @var list<bool|\Throwable> Per-call outcomes for mixed batches. */
+    public array $outcomes = [];
+
     public function sendWithHandle(
         string $to,
         string $message,
@@ -69,6 +72,11 @@ final class StubSmsService extends SmsService
             'siteId' => $siteId,
         ];
 
-        return $this->returnValue;
+        $outcome = array_shift($this->outcomes) ?? $this->returnValue;
+        if ($outcome instanceof \Throwable) {
+            throw $outcome;
+        }
+
+        return $outcome;
     }
 }

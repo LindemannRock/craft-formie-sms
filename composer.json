@@ -30,14 +30,15 @@
 	},
 	"require": {
 		"php": "^8.2",
-		"craftcms/cms": "^5.0.0",
+		"craftcms/cms": "^5.10",
 		"verbb/formie": "^3.0.0",
-		"lindemannrock/craft-plugin-base": "^5.0",
-		"lindemannrock/craft-sms-manager": "^5.0"
+		"lindemannrock/craft-plugin-base": "^5.38",
+		"lindemannrock/craft-sms-manager": "^5.16"
 	},
 	"require-dev": {
 		"craftcms/ecs": "dev-main",
 		"craftcms/phpstan": "dev-main",
+		"phpstan/phpstan": "^1.12.33",
 		"phpunit/phpunit": "^11.0"
 	},
 	"autoload": {
@@ -58,6 +59,14 @@
 		"ci:full": [
 			"@ci",
 			"@test"
+		],
+		"quality-gate": [
+			"composer --no-plugins validate --no-check-publish",
+			"bash scripts/check-platform",
+			"bash scripts/check-audit",
+			"@ci:full",
+			"node --test tests/js/runner-contract.test.mjs",
+			"bash scripts/check-package-boundary"
 		],
 		"install-hooks": "git config core.hooksPath .githooks 2>/dev/null || true",
 		"post-install-cmd": "@install-hooks",

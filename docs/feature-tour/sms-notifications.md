@@ -27,7 +27,7 @@ In the Control Panel — no code:
 1. Go to **Formie → Settings → Integrations** and click **New Integration**.
 2. Under **Miscellaneous**, choose the SMS Manager integration. It's labelled with your SMS Manager plugin name and described as "Send SMS notifications via SMS Manager on form submission."
 
-   ![Choosing the SMS integration under Miscellaneous](images/sms-notifications-new-integration.webp)
+   ![Choosing the SMS integration under Miscellaneous](../images/sms-notifications-new-integration.webp)
 
 3. Give it a **Name** (e.g. "SMS Notifications") — Formie generates the handle for you — and **Save**.
 
@@ -41,7 +41,7 @@ There's nothing else to set on the integration itself. Its settings page just li
 1. Edit a form and open the **Integrations** tab.
 2. Enable your SMS integration. The form-level settings appear:
 
-   ![The SMS integration's form settings](images/sms-notifications-form-settings.webp)
+   ![The SMS integration's form settings](../images/sms-notifications-form-settings.webp)
 
 3. Fill in the four fields below, then **Save** the form.
 
@@ -96,7 +96,7 @@ When a form is submitted, Formie SMS:
 5. Renders the **Message** with the submission's data.
 6. Hands each recipient + message to SMS Manager to send, under the source name `formie-sms` with the submission ID attached.
 
-SMS Manager records every message in its SMS Logs and rolls it into Analytics. If a send fails, the error is captured against the integration and visible in SMS Manager's logs.
+SMS Manager records every message in its SMS Logs and rolls it into Analytics. If any recipient fails, Formie SMS reports the integration as failed after attempting the remaining recipients. Formie's queued integration may retry the submission, which can send again to recipients who succeeded on the earlier attempt. Check SMS Manager's logs before retrying manually. Formie and Craft error logs use recipient references rather than raw numbers.
 
 ## Limitations
 

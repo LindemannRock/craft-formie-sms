@@ -44,8 +44,7 @@ class MigrateController extends Controller
      * Idempotent — re-running the command is a no-op once every block
      * already has `senderIdHandle` set. The legacy `senderIdId` /
      * `providerId` fields are left in place by design; their removal
-     * lands in a later release after the rollback window closes (see
-     * `plugins/formie-sms/.internal/todo.md` Stage 1f).
+     * requires separate verification on each client before removal.
      *
      * Dangling references (`senderIdId` points at a deleted record)
      * are reported in the output; admin needs to re-pick the sender via
@@ -61,11 +60,7 @@ class MigrateController extends Controller
         // Pre-filter at SQL level. Any form whose settings JSON mentions
         // `"senderIdId":` could be a candidate — the PHP walk below
         // confirms which integration blocks actually need migration.
-        $rows = (new Query())
-            ->select(['id', 'settings'])
-            ->from('{{%formie_forms}}')
-            ->andWhere(['like', 'settings', '"senderIdId":'])
-            ->all();
+        $rows = $this->candidateForms();
 
         if (empty($rows)) {
             $this->stdout("No forms with legacy senderIdId fields found. Nothing to migrate.\n", Console::FG_GREEN);
@@ -78,10 +73,16 @@ class MigrateController extends Controller
 
         foreach ($rows as $row) {
             $result = $this->migrateOne((int) $row['id'], (string) $row['settings']);
-            $stats[$result['status']]++;
+            if ($result['status'] === 'migrated_unresolved') {
+                $stats['migrated']++;
+                $stats['unresolved']++;
+            } else {
+                $stats[$result['status']]++;
+            }
             if (!empty($result['details'])) {
                 $color = match ($result['status']) {
                     'migrated' => Console::FG_GREEN,
+                    'migrated_unresolved' => Console::FG_YELLOW,
                     'unresolved' => Console::FG_YELLOW,
                     'errored' => Console::FG_RED,
                     default => null,
@@ -110,10 +111,20 @@ class MigrateController extends Controller
         return ($stats['errored'] > 0) ? ExitCode::SOFTWARE : ExitCode::OK;
     }
 
+    /** @return array<int, array<string, mixed>> */
+    protected function candidateForms(): array
+    {
+        return (new Query())
+            ->select(['id', 'settings'])
+            ->from('{{%formie_forms}}')
+            ->andWhere(['like', 'settings', '"senderIdId":'])
+            ->all();
+    }
+
     /**
      * Migrate one form's settings JSON.
      *
-     * @return array{status: 'migrated'|'already_current'|'unresolved'|'errored', details: string|null}
+     * @return array{status: 'migrated'|'migrated_unresolved'|'already_current'|'unresolved'|'errored', details: string|null}
      */
     private function migrateOne(int $formId, string $settingsJson): array
     {
@@ -182,18 +193,14 @@ class MigrateController extends Controller
             }
 
             try {
-                Craft::$app->getDb()->createCommand()->update(
-                    '{{%formie_forms}}',
-                    ['settings' => $newJson],
-                    ['id' => $formId]
-                )->execute();
+                $this->updateFormSettings($formId, $newJson);
             } catch (Throwable $e) {
                 return ['status' => 'errored', 'details' => 'DB update failed: ' . $e->getMessage()];
             }
 
             return [
-                'status' => 'migrated',
-                'details' => sprintf('Updated %d block(s): %s', count($migratedBlocks), implode(', ', $migratedBlocks)),
+                'status' => $unresolvedIds === [] ? 'migrated' : 'migrated_unresolved',
+                'details' => sprintf('Updated %d block(s): %s%s', count($migratedBlocks), implode(', ', $migratedBlocks), $unresolvedIds === [] ? '' : sprintf('; Dangling senderIdId(s): %s — admin needs to re-pick a sender via the Formie UI.', implode(', ', array_unique($unresolvedIds)))),
             ];
         }
 
@@ -208,5 +215,14 @@ class MigrateController extends Controller
         }
 
         return ['status' => 'already_current', 'details' => null];
+    }
+
+    protected function updateFormSettings(int $formId, string $newJson): void
+    {
+        Craft::$app->getDb()->createCommand()->update(
+            '{{%formie_forms}}',
+            ['settings' => $newJson],
+            ['id' => $formId]
+        )->execute();
     }
 }

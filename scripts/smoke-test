@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+for handle in formie sms-manager; do
+  if ! php craft plugin/list | grep -Eq "[[:space:]]${handle}[[:space:]].*[[:space:]]Yes[[:space:]]+Yes"; then
+    php craft plugin/install "$handle"
+  fi
+done
+
+plugin_list="$(php craft plugin/list)"
+echo "$plugin_list"
+if ! grep -Eq '[[:space:]]formie-sms[[:space:]].*[[:space:]]Yes[[:space:]]+Yes' <<<"$plugin_list"; then
+    echo 'Formie SMS is not installed and enabled.' >&2
+    exit 1
+fi
+
+php <<'PHP'
+<?php
+require 'bootstrap.php';
+require 'vendor/craftcms/cms/bootstrap/console.php';
+
+$types = \verbb\formie\Formie::$plugin->getIntegrations()->getIntegrationTypes(
+    \verbb\formie\base\Integration::TYPE_MISC,
+);
+if (!in_array(\lindemannrock\formiesms\integrations\miscellaneous\Sms::class, $types, true)) {
+    fwrite(STDERR, "Formie SMS integration is absent from Formie's miscellaneous registry.\n");
+    exit(1);
+}
+echo "Formie miscellaneous integration registration passed.\n";
+
+$sms = new class extends \lindemannrock\formiesms\integrations\miscellaneous\Sms {
+    public function smokeSenderHandle(): ?string
+    {
+        return $this->resolveSenderIdHandle();
+    }
+};
+$sms->senderIdHandle = 'smoke_explicit_sender';
+$sms->senderIdId = PHP_INT_MAX;
+if ($sms->smokeSenderHandle() !== 'smoke_explicit_sender') {
+    fwrite(STDERR, "Explicit SMS sender handle did not take priority over a legacy ID.\n");
+    exit(1);
+}
+$sms->senderIdHandle = null;
+if ($sms->smokeSenderHandle() !== null) {
+    fwrite(STDERR, "Dangling legacy SMS sender ID unexpectedly resolved.\n");
+    exit(1);
+}
+echo "SMS sender resolution passed without dispatch.\n";
+PHP
+
+output="$(php craft formie-sms/migrate/integration-handles)"
+echo "$output"
+if [[ "$output" != *'No forms with legacy senderIdId fields found. Nothing to migrate.'* ]]; then
+    echo 'Expected empty-project migration command behavior was not observed.' >&2
+    exit 1
+fi
+
+echo 'Formie SMS registration and empty-project migration command passed.'

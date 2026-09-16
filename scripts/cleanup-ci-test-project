@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+owned_parent="${FORMIE_SMS_CI_OWNED_PARENT:-}"
+temp_root="${RUNNER_TEMP:?RUNNER_TEMP is required}"
+if [[ -z "$owned_parent" ]]; then
+    echo 'No CI project was registered for cleanup.'
+    exit 0
+fi
+if [[ "$(dirname "$owned_parent")" != "$temp_root" || "$(basename "$owned_parent")" != formie-sms-ci.* ]]; then
+    echo "Refusing to remove unexpected CI project path: $owned_parent" >&2
+    exit 1
+fi
+rm -rf -- "$owned_parent"
+test ! -e "$owned_parent"
+echo "Removed exact CI test project: $owned_parent"

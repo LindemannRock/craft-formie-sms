@@ -15,7 +15,9 @@ use lindemannrock\formiesms\integrations\miscellaneous\Sms;
 use lindemannrock\formiesms\tests\Stubs\StubSenderIdsService;
 use lindemannrock\formiesms\tests\Stubs\StubSmsService;
 use lindemannrock\formiesms\tests\TestCase;
+use lindemannrock\smsmanager\helpers\SmsPrivacyHelper;
 use verbb\formie\elements\Submission;
+use verbb\formie\errors\IntegrationException;
 
 /**
  * Coverage for {@see Sms::sendPayload()}'s post-render recipient parsing.
@@ -143,6 +145,68 @@ final class SmsRecipientParsingTest extends TestCase
         self::assertCount(0, $this->stubSms->sentCalls);
     }
 
+    public function testFalseResultsPropagateAfterEveryRecipientIsAttempted(): void
+    {
+        foreach ([
+            [[true, true], true],
+            [[false], false],
+            [[false, false], false],
+            [[true, false, true], false],
+        ] as [$outcomes, $expected]) {
+            $this->stubSms->sentCalls = [];
+            $this->stubSms->outcomes = $outcomes;
+            $numbers = array_slice(['+96597255330', '+96560632020', '+96512345678'], 0, count($outcomes));
+            $sms = $this->makeSms(implode(', ', $numbers));
+            $sms->message = 'msg-template';
+            $sms->senderIdHandle = '';
+
+            self::assertSame($expected, $sms->sendPayload($this->makeSubmission()));
+            self::assertSame($numbers, array_column($this->stubSms->sentCalls, 'to'));
+        }
+    }
+
+    public function testFailureLogsUseRecipientReferencesAndInvalidTokensDoNotExposeRenderedList(): void
+    {
+        $logger = Craft::getLogger();
+        $messages = $logger->messages;
+        $flushInterval = $logger->flushInterval;
+        $number = '+96597255330';
+        $invalid = 'INVALID_PRIVATE_CANARY';
+        $this->stubSms->outcomes = [false];
+        $sms = $this->makeSms($invalid . ', ' . $number);
+        $sms->message = 'msg-template';
+        $sms->senderIdHandle = '';
+
+        try {
+            $logger->messages = [];
+            $logger->flushInterval = PHP_INT_MAX;
+            self::assertFalse($sms->sendPayload($this->makeSubmission()));
+            $logged = json_encode($logger->messages, JSON_THROW_ON_ERROR);
+            self::assertStringNotContainsString($invalid, $logged);
+            self::assertStringNotContainsString($number, $logged);
+            self::assertStringContainsString(SmsPrivacyHelper::recipientReference($invalid), $logged);
+            self::assertStringContainsString(SmsPrivacyHelper::recipientReference($number), $logged);
+        } finally {
+            $logger->messages = $messages;
+            $logger->flushInterval = $flushInterval;
+        }
+    }
+
+    public function testProviderExceptionRetainsFormieExceptionBehavior(): void
+    {
+        $this->stubSms->outcomes = [new \RuntimeException('test provider exception')];
+        $sms = $this->makeSms('+96597255330, +96560632020');
+        $sms->message = 'msg-template';
+        $sms->senderIdHandle = '';
+
+        $this->expectException(IntegrationException::class);
+        try {
+            $sms->sendPayload($this->makeSubmission());
+        } finally {
+            self::assertCount(1, $this->stubSms->sentCalls);
+        }
+    }
+
     /**
      * Build an Sms integration that pre-renders both `recipients` and
      * `message` to controlled strings. Anonymous subclass overrides the
@@ -155,7 +219,7 @@ final class SmsRecipientParsingTest extends TestCase
      */
     private function makeSms(string $rendered): Sms
     {
-        $sms = new class ($rendered) extends Sms {
+        $sms = new class($rendered) extends Sms {
             public function __construct(public string $renderedRecipients)
             {
                 parent::__construct();

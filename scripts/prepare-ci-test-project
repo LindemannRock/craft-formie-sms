@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+package_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+temp_root="${RUNNER_TEMP:?RUNNER_TEMP is required}"
+owned_parent="$(mktemp -d "$temp_root/formie-sms-ci.XXXXXX")"
+project_root="$owned_parent/project"
+completed=false
+
+cleanup_failed_setup() {
+    setup_exit=$?
+    trap - EXIT INT TERM HUP
+    if [[ "$completed" != true && -d "$owned_parent" && "$(dirname "$owned_parent")" == "$temp_root" && "$(basename "$owned_parent")" == formie-sms-ci.* ]]; then
+        cleanup_exit=0
+        rm -rf -- "$owned_parent" || cleanup_exit=$?
+        if [[ "$cleanup_exit" -ne 0 || -e "$owned_parent" ]]; then
+            echo "Failed to remove owned CI project: $owned_parent" >&2
+            if [[ "$setup_exit" -eq 0 ]]; then
+                setup_exit=1
+            fi
+        fi
+    fi
+    exit "$setup_exit"
+}
+trap cleanup_failed_setup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+trap 'exit 129' HUP
+
+composer create-project craftcms/craft "$project_root" --no-interaction --no-scripts --no-install --quiet
+cd "$project_root"
+repository="$(php -r 'echo json_encode(["type" => "path", "url" => $argv[1], "options" => ["symlink" => false, "versions" => ["lindemannrock/craft-formie-sms" => "dev-main"]]], JSON_UNESCAPED_SLASHES);' "$package_root")"
+composer config --json repositories.formie-sms "$repository"
+composer config minimum-stability dev
+composer config prefer-stable true
+composer require 'lindemannrock/craft-formie-sms:dev-main' --no-interaction --no-scripts --update-with-all-dependencies
+
+cat > .env <<'ENV'
+CRAFT_ENVIRONMENT=dev
+CRAFT_DEV_MODE=true
+CRAFT_ALLOW_ADMIN_CHANGES=true
+CRAFT_DB_DRIVER=mysql
+CRAFT_DB_SERVER=db
+CRAFT_DB_PORT=3306
+CRAFT_DB_DATABASE=formie_sms_ci
+CRAFT_DB_USER=formie_sms_ci
+CRAFT_DB_PASSWORD=formie_sms_ci
+PRIMARY_SITE_URL=http://localhost
+ENV
+printf 'CRAFT_SECURITY_KEY=%s\n' "$(php -r 'echo bin2hex(random_bytes(32));')" >> .env
+
+php -r 'new PDO("mysql:host=db;port=3306;dbname=formie_sms_ci", "formie_sms_ci", "formie_sms_ci"); echo "CI MySQL connection passed.\n";'
+
+php craft install --interactive=0 --username=admin --password=password --email=test@example.com --site-name='Formie SMS CI' --site-url=http://localhost
+for handle in logging-library sms-manager formie formie-sms; do
+    php craft plugin/install "$handle"
+done
+plugin_list="$(php craft plugin/list)"
+for handle in logging-library sms-manager formie formie-sms; do
+    if ! grep -Eq "[[:space:]]${handle}[[:space:]].*[[:space:]]Yes[[:space:]]+Yes" <<<"$plugin_list"; then
+        echo "Required CI plugin is not installed and enabled: $handle" >&2
+        exit 1
+    fi
+done
+
+printf 'FORMIE_SMS_TEST_PROJECT_ROOT=%s\n' "$project_root" >> "${GITHUB_ENV:?GITHUB_ENV is required}"
+printf 'FORMIE_SMS_CI_OWNED_PARENT=%s\n' "$owned_parent" >> "$GITHUB_ENV"
+completed=true
+trap - EXIT
+echo "Prepared exact CI test project: $project_root"

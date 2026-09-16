@@ -1,9 +1,28 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-act push \
-    -W .github/workflows/ci.yml \
-    -j quality-gates \
+package_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$package_root"
+
+workflow=.github/workflows/ci.yml
+if [[ "$(grep -c 'run: composer quality-gate' "$workflow")" != 1 ]]; then
+    echo 'CI must run composer quality-gate exactly once.' >&2
+    exit 1
+fi
+if grep -Eq 'safe\.directory[[:space:]]+\*' "$workflow"; then
+    echo 'Wildcard Git trust is not allowed.' >&2
+    exit 1
+fi
+if grep -q 'container:' "$workflow"; then
+    checkout_line="$(grep -n 'actions/checkout@' "$workflow" | head -1 | cut -d: -f1)"
+    trust_line="$(grep -n 'safe.directory "\$GITHUB_WORKSPACE"' "$workflow" | head -1 | cut -d: -f1)"
+    gate_line="$(grep -n 'run: composer quality-gate' "$workflow" | head -1 | cut -d: -f1)"
+    if [[ -z "$checkout_line" || -z "$trust_line" || "$checkout_line" -ge "$trust_line" || "$trust_line" -ge "$gate_line" ]]; then
+        echo 'CI must trust its exact checkout after checkout and before the gate.' >&2
+        exit 1
+    fi
+fi
+
+act push -W "$workflow" -j quality-gates \
     -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-latest \
-    --container-architecture linux/amd64 \
-    "$@"
+    --container-architecture linux/amd64 --rm "$@"

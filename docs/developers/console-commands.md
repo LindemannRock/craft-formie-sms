@@ -40,7 +40,7 @@ ddev craft formie-sms/migrate/integration-handles
 
 **When to run it:** after upgrading from an older Formie SMS version that stored SMS Manager sender IDs by their numeric database ID. The command scans Formie form settings for the legacy `senderIdId` value and writes the matching `senderIdHandle` when the sender still exists in SMS Manager. Forms saved on a current version already store the handle and need nothing.
 
-**What it reports:** per form, one of *Migrated*, *Already current*, *Unresolved*, or *Errored*, followed by a summary count.
+**What it reports:** per form, *Migrated*, *Already current*, *Unresolved*, or *Errored*. A form with both a resolved and a missing sender reports the successful update and the dangling ID on the same line. The summary counts both outcomes, so you can fix the missing sender on the first run.
 
 > [!NOTE]
 > The command is idempotent — safe to run repeatedly. It updates Formie's form settings directly without triggering Formie's save hooks, and leaves the legacy `senderIdId` / `providerId` values in place for rollback safety. A form whose `senderIdId` points at a deleted sender is reported as **Unresolved**; fix it by re-picking a sender on the form's Integrations tab.

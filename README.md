@@ -3,9 +3,9 @@
 # Formie SMS Plugin for Craft CMS
 
 [![Latest Version](https://img.shields.io/packagist/v/lindemannrock/craft-formie-sms.svg)](https://packagist.org/packages/lindemannrock/craft-formie-sms)
-[![Craft CMS](https://img.shields.io/badge/Craft%20CMS-5.0+-orange.svg)](https://craftcms.com/)
+[![Craft CMS](https://img.shields.io/badge/Craft%20CMS-5.10+-orange.svg)](https://craftcms.com/)
 [![Formie](https://img.shields.io/badge/Formie-3.0+-purple.svg)](https://verbb.io/craft-plugins/formie)
-[![SMS Manager](https://img.shields.io/badge/SMS%20Manager-5.0+-green.svg)](https://github.com/LindemannRock/craft-sms-manager)
+[![SMS Manager](https://img.shields.io/badge/SMS%20Manager-5.16+-green.svg)](https://github.com/LindemannRock/craft-sms-manager)
 [![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://php.net/)
 [![License](https://img.shields.io/packagist/l/lindemannrock/craft-formie-sms.svg)](LICENSE.md)
 
@@ -31,10 +31,11 @@ This plugin is in active development and not yet available on the Craft Plugin S
 
 ## Requirements
 
-- Craft CMS 5.0 or greater
+- Craft CMS 5.10 or greater
 - PHP 8.2 or greater
 - [Formie](https://verbb.io/craft-plugins/formie) 3.0 or greater
-- [SMS Manager](https://github.com/LindemannRock/craft-sms-manager) 5.0 or greater
+- [SMS Manager](https://github.com/LindemannRock/craft-sms-manager) 5.16 or greater
+- [Base](https://github.com/LindemannRock/craft-plugin-base) 5.38 or greater
 
 ## Installation
 

@@ -8,8 +8,27 @@ on:
 jobs:
   quality-gates:
     runs-on: ubuntu-latest
+    container: node:24-bookworm
+    services:
+      db:
+        image: mysql:8.0.40
+        env:
+          MYSQL_DATABASE: formie_sms_ci
+          MYSQL_USER: formie_sms_ci
+          MYSQL_PASSWORD: formie_sms_ci
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
     steps:
       - uses: actions/checkout@v6
+
+      - name: Trust checked-out repository
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - name: Set up PHP 8.3
         uses: shivammathur/setup-php@v2
@@ -18,16 +37,18 @@ jobs:
           tools: composer:v2
           coverage: none
 
-      - name: Install dependencies
-        uses: ramsey/composer-install@v3
+      - name: Install package dependencies
+        uses: ramsey/composer-install@v4
         with:
           composer-options: --prefer-dist
+          ignore-cache: ${{ env.ACT }}
 
-      - name: Composer security audit
-        run: composer audit --abandoned=report
+      - name: Prepare isolated Craft test project
+        run: bash scripts/prepare-ci-test-project
 
-      - name: PHPStan
-        run: composer phpstan
+      - name: Complete package quality gate
+        run: composer quality-gate
 
-      - name: ECS code style check
-        run: composer check-cs
+      - name: Remove isolated Craft test project
+        if: always()
+        run: bash scripts/cleanup-ci-test-project

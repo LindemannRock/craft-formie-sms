@@ -12,7 +12,10 @@
 
 declare(strict_types=1);
 
-$baseBootstrap = dirname(__DIR__, 3) . '/vendor/lindemannrock/craft-plugin-base/src/testing/bootstrap.php';
+$baseBootstrap = dirname(__DIR__) . '/vendor/lindemannrock/craft-plugin-base/src/testing/bootstrap.php';
+if (!is_file($baseBootstrap)) {
+    $baseBootstrap = dirname(__DIR__, 3) . '/vendor/lindemannrock/craft-plugin-base/src/testing/bootstrap.php';
+}
 
 if (!file_exists($baseBootstrap)) {
     fwrite(STDERR, "Base plugin testing bootstrap not found at {$baseBootstrap}\n");
@@ -22,4 +25,5 @@ if (!file_exists($baseBootstrap)) {
 
 require_once $baseBootstrap;
 
-\lindemannrock\base\testing\bootstrap();
+$testProjectRoot = \craft\helpers\App::env('FORMIE_SMS_TEST_PROJECT_ROOT');
+\lindemannrock\base\testing\bootstrap(is_string($testProjectRoot) && $testProjectRoot !== '' ? $testProjectRoot : null);

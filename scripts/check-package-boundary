@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+package_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$package_root"
+
+if [[ ! -d .git ]]; then
+    echo 'Package boundary check requires the plugin Git checkout.' >&2
+    exit 1
+fi
+
+archive_paths="$(git archive HEAD | tar -tf -)"
+
+for path in src/FormieSms.php src/integrations/miscellaneous/Sms.php src/web/assets/sms-icon.svg; do
+    if ! grep -Fxq "$path" <<<"$archive_paths"; then
+        echo "Runtime file missing from committed package archive: $path" >&2
+        exit 1
+    fi
+done
+
+for path in tests/ .github/ .githooks/ scripts/ phpstan.neon ecs.php phpunit.xml.dist; do
+    if grep -Eq "^${path}" <<<"$archive_paths"; then
+        echo "Development path included in committed package archive: $path" >&2
+        exit 1
+    fi
+done
+
+echo 'Package export attributes preserve runtime files and exclude development files.'

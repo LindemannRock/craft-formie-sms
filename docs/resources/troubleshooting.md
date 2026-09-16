@@ -2,6 +2,8 @@
 
 Common issues and how to resolve them. Most send problems show up in **SMS Manager → SMS Logs** (per-message provider responses) — check there first, then your `storage/logs` for plugin-level detail.
 
+Craft and Formie error logs show a keyed recipient reference for invalid or failed numbers, not the number itself. Match failures with SMS Manager's governed logs. Older Craft/Formie logs may still contain numbers; review their retention and access under your site's logging policy.
+
 ## The SMS integration doesn't appear in Formie
 
 1. **Both plugins installed and enabled?** Formie SMS needs [Formie](https://verbb.io/craft-plugins/formie) *and* [SMS Manager](https://github.com/LindemannRock/craft-sms-manager) installed and enabled under **Settings → Plugins**.
@@ -25,6 +27,8 @@ Work through these in order:
 3. **Sender resolves.** Either pick a specific sender, or make sure SMS Manager has a **default sender** configured if you chose "Use SMS Manager default".
 4. **Check the SMS log.** Each failed message stores the provider's error — that usually names the cause.
 5. **Provider status and credit.** Confirm the provider is enabled and the account has balance.
+
+If a form targets several recipients and one fails, the integration reports failure after trying all of them. Formie's normal queued retry can repeat messages that succeeded on the first attempt; check SMS Manager's per-message history before triggering another send.
 
 ## Error: "No valid recipients after rendering"
 
@@ -62,4 +66,4 @@ php craft formie-sms/migrate/integration-handles
 ddev craft formie-sms/migrate/integration-handles
 ```
 
-A form reported as **Unresolved** points at a sender that no longer exists — re-pick a sender on its Integrations tab. See [Console Commands](../developers/console-commands.md).
+A form reported with a dangling sender ID points at a sender that no longer exists, even if another block on that form migrated successfully. Re-pick the missing sender on its Integrations tab. See [Console Commands](../developers/console-commands.md).

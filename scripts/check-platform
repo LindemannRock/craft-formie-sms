@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+package_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if [[ -f "$package_root/composer.lock" ]]; then
+    cd "$package_root"
+elif [[ -f "$package_root/../../composer.lock" && -d "$package_root/../../vendor" ]]; then
+    cd "$package_root/../.."
+else
+    echo 'No installed Composer lockfile is available for platform validation.' >&2
+    exit 1
+fi
+composer check-platform-reqs
