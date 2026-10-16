@@ -11,6 +11,7 @@ namespace lindemannrock\formiesms\integrations\miscellaneous;
 use Craft;
 use craft\helpers\UrlHelper;
 use League\HTMLToMarkdown\HtmlConverter;
+use lindemannrock\base\helpers\DateFormatHelper;
 use lindemannrock\base\helpers\PluginHelper;
 use lindemannrock\smsmanager\helpers\SmsPrivacyHelper;
 use lindemannrock\smsmanager\SmsManager;
@@ -49,7 +50,7 @@ class Sms extends Miscellaneous
      * @var int|null Legacy provider ID.
      *
      * Ignored at dispatch — the provider is derived from the sender's
-     * `providerHandle` inside SMS Manager's `sendWithHandle()`. Kept for
+     * `providerHandle` inside SMS Manager's `sendWithHandleDetails()`. Kept for
      * back-compat reads on forms saved before 3.10.0. Will be removed in
      * a future release once both prod test installs have migrated via the
      * `formie-sms/migrate/integration-handles` console command.
@@ -154,9 +155,74 @@ class Sms extends Miscellaneous
             'integration' => $this,
             'form' => $form,
             'senderIdOptions' => $senderIdOptions,
+            'senderHoldNotices' => $this->buildSenderHoldNotices($senderIdOptions),
             'languages' => $languages,
             'initialSenderIdHandle' => $initialSenderIdHandle,
         ]);
+    }
+
+    /**
+     * Read a safe page-load snapshot; SMS Manager still owns admission at send time.
+     * Older SMS Manager installs can dispatch safely without the optional status API.
+     */
+    private function buildSenderHoldNotices(array $options): array
+    {
+        $notices = [];
+        if (!$this->isSmsManagerInstalled()) {
+            return $notices;
+        }
+        $plugin = SmsManager::$plugin;
+        $transport = $plugin->has('transport') ? $plugin->get('transport') : null;
+        foreach ($options as $option) {
+            if (!array_key_exists('value', $option)) {
+                continue;
+            }
+            $handle = (string)$option['value'];
+            $notice = [
+                'message' => Craft::t('formie-sms', 'Hold status is unavailable here. Check SMS Manager.'),
+                'blocked' => false,
+            ];
+            try {
+                $sender = $handle === '' ? $plugin->senderIds->getDefaultSenderId() : $plugin->senderIds->getSenderIdByHandle($handle);
+                $provider = $sender?->providerHandle ? $plugin->providers->getProviderByHandle($sender->providerHandle) : null;
+                if ($sender && $provider && $transport && method_exists($transport, 'status')) {
+                    $instance = $plugin->providers->createProviderByType($provider->type);
+                    if ($instance && method_exists($instance, 'getTransportContext')) {
+                        $settings = $provider->getSettingsArray();
+                        $settings['isDev'] = $plugin->senderIds->isDevelopmentSender($sender);
+                        // The provider resolves development fallback and account identity.
+                        $context = $instance->getTransportContext($settings);
+                        $status = $transport->status($context);
+                        if ($status['available']) {
+                            $holds = array_filter($status['holds'], static fn(array $hold): bool => $hold['active'] && ($hold['scope'] === 'transport' || $hold['lane'] === $context->activeLane));
+                            if ($holds === []) {
+                                continue;
+                            }
+                            $recovery = null;
+                            foreach ($holds as $hold) {
+                                if ($hold['recoveryAt'] === null) {
+                                    $recovery = null;
+                                    break;
+                                }
+                                if ($recovery === null || $hold['recoveryAt'] > $recovery) {
+                                    $recovery = $hold['recoveryAt'];
+                                }
+                            }
+                            $notice = [
+                                'message' => $recovery === null
+                                    ? Craft::t('formie-sms', 'SMS sending is paused until this hold is released in SMS Manager.')
+                                    : Craft::t('formie-sms', 'SMS Manager has paused sending until {time}.', ['time' => DateFormatHelper::formatDatetime($recovery)]),
+                                'blocked' => true,
+                            ];
+                        }
+                    }
+                }
+            } catch (\Throwable) {
+                // Do not expose settings, credentials, guard tokens or exception details.
+            }
+            $notices[$handle] = $notice;
+        }
+        return $notices;
     }
 
     /**
@@ -387,7 +453,7 @@ class Sms extends Miscellaneous
         $allSent = true;
         foreach ($recipients as $recipient) {
             try {
-                $result = $smsService->sendWithHandle(
+                $result = $smsService->sendWithHandleDetails(
                     $recipient,
                     $message,
                     $senderIdHandle,
@@ -397,8 +463,15 @@ class Sms extends Miscellaneous
                     $submission->siteId,
                 );
 
-                if (!$result) {
+                if (!$result['success']) {
                     $allSent = false;
+                    // SMS Manager owns classification and admission. Stop on the
+                    // first account/transport failure, including a newly created
+                    // hold, without retrying recipients already sent successfully.
+                    if (in_array($result['failureScope'], ['account', 'transport'], true)) {
+                        Integration::error($this, Craft::t('formie-sms', 'SMS Manager has blocked sending for this account or transport. Remaining recipients were not processed. Check SMS Manager before retrying.'));
+                        break;
+                    }
                     $recipient = SmsPrivacyHelper::recipientReference($recipient);
                     Integration::error($this, Craft::t('formie-sms', 'Failed to send SMS to {recipient}', [
                         'recipient' => $recipient,

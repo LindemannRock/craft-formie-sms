@@ -36,6 +36,7 @@
             id: 'senderIdHandle',
             value: initialSenderIdHandle,
             options: senderIdOptions,
+            inputAttributes: {'v-model': 'model.senderIdHandle'},
         }) }}
 
         <ul class="errors" v-cloak v-if="!isEmpty(get(form, 'settings.integrations.{{ handle }}.errors.senderIdHandle'))">
@@ -43,6 +44,23 @@
                 ${ error }
             </li>
         </ul>
+
+        {% for senderHandle, notice in senderHoldNotices %}
+            <div v-cloak v-if="model.senderIdHandle === {{ senderHandle|json_encode }}">
+                {% set noticeMessage %}
+                    {% set managerLink = '<a href="' ~ cpUrl('sms-manager/providers')|e('html_attr') ~ '">' ~ 'SMS Manager'|t('formie-sms')|e ~ '</a>' %}
+                    <p>{{ notice.message|e|replace({'SMS Manager': managerLink})|raw }}</p>
+                    {% if notice.blocked %}
+                        <p>{{ 'Affected submissions will not send automatically later. Reload this page to refresh the status.'|t('formie-sms') }}</p>
+                    {% endif %}
+                {% endset %}
+                {% include 'lindemannrock-base/_components/info-box' with {
+                    message: noticeMessage,
+                    type: notice.blocked ? 'warning' : 'info',
+                    margin: 'bottom',
+                } only %}
+            </div>
+        {% endfor %}
 
         {# Recipients #}
         <form-kit

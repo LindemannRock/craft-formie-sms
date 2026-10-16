@@ -17,7 +17,7 @@ That means there's almost nothing to configure in the plugin itself. Everything 
 - Alerting a team member's phone the moment a lead or support request comes in
 - Sending booking, appointment, or order reminders pulled from form fields
 - Running different SMS per language on a multi-site install
-- Keeping every form-triggered SMS in SMS Manager's logs and analytics alongside the rest of your messaging
+- Reviewing attempted form-triggered sends in SMS Manager's logs and analytics when enabled
 
 ## Core capabilities
 

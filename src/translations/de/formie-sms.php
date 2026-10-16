@@ -14,6 +14,7 @@ return [
     'Open Formie SMS' => 'Formie SMS öffnen',
 
     // Controller messages
+    'SMS Manager has blocked sending for this account or transport. Remaining recipients were not processed. Check SMS Manager before retrying.' => 'SMS Manager hat den Versand für dieses Konto oder diesen Transport gesperrt. Die übrigen Empfänger wurden nicht verarbeitet. Überprüfen Sie SMS Manager vor einem erneuten Versuch.',
     'Failed to send SMS to {recipient}' => 'SMS-Versand an {recipient} fehlgeschlagen',
     'No valid recipients after rendering — SMS not sent. Check the integration\'s "Recipients" template and the submission data.' => 'Nach dem Rendern keine gültigen Empfänger gefunden — SMS wurde nicht gesendet. Überprüfen Sie die „Empfänger"-Vorlage der Integration und die Übermittlungsdaten.',
     'SMS Manager plugin is not installed.' => 'Das SMS Manager-Plugin ist nicht installiert.',
@@ -31,6 +32,10 @@ return [
     'This integration uses SMS Manager to send SMS messages. Configure providers and sender IDs in the {link} settings.' => 'Diese Integration verwendet SMS Manager zum Versand von SMS-Nachrichten. Konfigurieren Sie Anbieter und Absender-IDs in den {link}-Einstellungen.',
 
     // Integration: Form settings
+    'SMS Manager has paused sending until {time}.' => 'SMS Manager hat den Versand bis {time} pausiert.',
+    'SMS sending is paused until this hold is released in SMS Manager.' => 'Der SMS-Versand ist pausiert, bis diese Sperre in SMS Manager aufgehoben wird.',
+    'Hold status is unavailable here. Check SMS Manager.' => 'Der Sperrstatus ist hier nicht verfügbar. Überprüfen Sie SMS Manager.',
+    'Affected submissions will not send automatically later. Reload this page to refresh the status.' => 'Betroffene Übermittlungen werden später nicht automatisch gesendet. Laden Sie diese Seite neu, um den Status zu aktualisieren.',
     'Any Language' => 'Beliebige Sprache',
     'Language Filter' => 'Sprachfilter',
     'Message' => 'Nachricht',

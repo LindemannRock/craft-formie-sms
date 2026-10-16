@@ -16,7 +16,7 @@ use lindemannrock\smsmanager\services\SmsService;
  * Test stub for sms-manager's {@see SmsService}.
  *
  * The integration's `sendPayload()` dispatches every recipient through
- * `SmsManager::$plugin->sms->sendWithHandle(...)`. Letting that hit the
+ * `SmsManager::$plugin->sms->sendWithHandleDetails(...)`. Letting that hit the
  * real service would attempt actual provider dispatch (DB inserts to the
  * sms-manager logs + analytics tables, possibly outbound HTTP) — neither
  * suitable nor deterministic for tests.
@@ -62,6 +62,18 @@ final class StubSmsService extends SmsService
         ?int $sourceElementId = null,
         ?int $siteId = null,
     ): bool {
+        return $this->sendWithHandleDetails($to, $message, $senderIdHandle, $language, $sourcePlugin, $sourceElementId, $siteId)['success'];
+    }
+
+    public function sendWithHandleDetails(
+        string $to,
+        string $message,
+        string $senderIdHandle,
+        string $language = 'en',
+        ?string $sourcePlugin = null,
+        ?int $sourceElementId = null,
+        ?int $siteId = null,
+    ): array {
         $this->sentCalls[] = [
             'to' => $to,
             'message' => $message,
@@ -77,6 +89,19 @@ final class StubSmsService extends SmsService
             throw $outcome;
         }
 
-        return $outcome;
+        return [
+            'success' => $outcome,
+            'messageId' => null,
+            'response' => null,
+            'error' => null,
+            'failureCode' => $outcome ? null : 'invalid-recipient',
+            'failureScope' => $outcome ? null : 'recipient',
+            'retryAfterSeconds' => null,
+            'executionTime' => 0,
+            'providerName' => null,
+            'senderIdName' => null,
+            'senderIdValue' => null,
+            'recipient' => $to,
+        ];
     }
 }

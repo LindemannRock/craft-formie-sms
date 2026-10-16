@@ -16,6 +16,8 @@ use lindemannrock\formiesms\tests\Stubs\StubSenderIdsService;
 use lindemannrock\formiesms\tests\Stubs\StubSmsService;
 use lindemannrock\formiesms\tests\TestCase;
 use lindemannrock\smsmanager\helpers\SmsPrivacyHelper;
+use lindemannrock\smsmanager\services\SmsService;
+use PHPUnit\Framework\Attributes\DataProvider;
 use verbb\formie\elements\Submission;
 use verbb\formie\errors\IntegrationException;
 
@@ -205,6 +207,44 @@ final class SmsRecipientParsingTest extends TestCase
         } finally {
             self::assertCount(1, $this->stubSms->sentCalls);
         }
+    }
+
+    #[DataProvider('blockedResults')]
+    public function testStructuredAccountAndTransportFailuresStopTheLoop(string $code, string $scope): void
+    {
+        $service = $this->createMock(SmsService::class);
+        $result = $this->stubSms->sendWithHandleDetails('+12025550121', 'Synthetic', 'synthetic');
+        $result = array_replace($result, ['success' => false, 'failureCode' => $code, 'failureScope' => $scope]);
+        $service->expects(self::once())->method('sendWithHandleDetails')->willReturn($result);
+        $service->expects(self::never())->method('sendWithHandle');
+        $this->swapPluginComponent('sms-manager', 'sms', $service);
+        $sms = $this->makeSms('+12025550121,+12025550122');
+        $sms->message = 'Synthetic';
+        $sms->senderIdHandle = 'synthetic';
+        self::assertFalse($sms->sendPayload($this->makeSubmission()));
+    }
+
+    public static function blockedResults(): iterable
+    {
+        yield 'account hold' => ['cooldown-active', 'account'];
+        yield 'transport hold' => ['cooldown-active', 'transport'];
+        yield 'account failure' => ['account-unavailable', 'account'];
+        yield 'IP block' => ['ip-blocked', 'transport'];
+        yield 'account rate limit' => ['rate-limited', 'account'];
+        yield 'transport rate limit' => ['rate-limited', 'transport'];
+        yield 'account unavailable' => ['provider-unavailable', 'account'];
+        yield 'transport unavailable' => ['provider-unavailable', 'transport'];
+        yield 'admission busy' => ['guard-busy', 'transport'];
+        yield 'admission unavailable' => ['guard-unavailable', 'transport'];
+        yield 'uncertain admission' => ['transport-uncertain', 'transport'];
+    }
+
+    public function testLanguageMismatchSkipsDispatchSuccessfully(): void
+    {
+        $sms = $this->makeSms('+12025550121');
+        $sms->language = 'synthetic-unmatched-language';
+        self::assertTrue($sms->sendPayload($this->makeSubmission()));
+        self::assertSame([], $this->stubSms->sentCalls);
     }
 
     /**

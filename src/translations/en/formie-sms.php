@@ -14,6 +14,7 @@ return [
     'Open Formie SMS' => 'Open Formie SMS',
 
     // Controller messages
+    'SMS Manager has blocked sending for this account or transport. Remaining recipients were not processed. Check SMS Manager before retrying.' => 'SMS Manager has blocked sending for this account or transport. Remaining recipients were not processed. Check SMS Manager before retrying.',
     'Failed to send SMS to {recipient}' => 'Failed to send SMS to {recipient}',
     'No valid recipients after rendering — SMS not sent. Check the integration\'s "Recipients" template and the submission data.' => 'No valid recipients after rendering — SMS not sent. Check the integration\'s "Recipients" template and the submission data.',
     'SMS Manager plugin is not installed.' => 'SMS Manager plugin is not installed.',
@@ -31,6 +32,10 @@ return [
     'This integration uses SMS Manager to send SMS messages. Configure providers and sender IDs in the {link} settings.' => 'This integration uses SMS Manager to send SMS messages. Configure providers and sender IDs in the {link} settings.',
 
     // Integration: Form settings
+    'SMS Manager has paused sending until {time}.' => 'SMS Manager has paused sending until {time}.',
+    'SMS sending is paused until this hold is released in SMS Manager.' => 'SMS sending is paused until this hold is released in SMS Manager.',
+    'Hold status is unavailable here. Check SMS Manager.' => 'Hold status is unavailable here. Check SMS Manager.',
+    'Affected submissions will not send automatically later. Reload this page to refresh the status.' => 'Affected submissions will not send automatically later. Reload this page to refresh the status.',
     'Any Language' => 'Any Language',
     'Language Filter' => 'Language Filter',
     'Message' => 'Message',

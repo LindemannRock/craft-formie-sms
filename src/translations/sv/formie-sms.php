@@ -14,6 +14,7 @@ return [
     'Open Formie SMS' => 'Öppna Formie SMS',
 
     // Controller messages
+    'SMS Manager has blocked sending for this account or transport. Remaining recipients were not processed. Check SMS Manager before retrying.' => 'SMS Manager har spärrat sändning för detta konto eller denna transport. Återstående mottagare har inte behandlats. Kontrollera SMS Manager innan du försöker igen.',
     'Failed to send SMS to {recipient}' => 'Det gick inte att skicka SMS till {recipient}',
     'No valid recipients after rendering — SMS not sent. Check the integration\'s "Recipients" template and the submission data.' => 'Inga giltiga mottagare efter rendering — SMS skickades inte. Kontrollera integrationens mall för «Mottagare» och inlämningsdata.',
     'SMS Manager plugin is not installed.' => 'Plugin-programmet SMS Manager är inte installerat.',
@@ -31,6 +32,10 @@ return [
     'This integration uses SMS Manager to send SMS messages. Configure providers and sender IDs in the {link} settings.' => 'Den här integrationen använder SMS Manager för att skicka SMS-meddelanden. Konfigurera leverantörer och avsändar-ID:n i inställningarna för {link}.',
 
     // Integration: Form settings
+    'SMS Manager has paused sending until {time}.' => 'SMS Manager har pausat sändning till {time}.',
+    'SMS sending is paused until this hold is released in SMS Manager.' => 'SMS-sändning är pausad tills denna spärr hävs i SMS Manager.',
+    'Hold status is unavailable here. Check SMS Manager.' => 'Spärrstatus är inte tillgänglig här. Kontrollera SMS Manager.',
+    'Affected submissions will not send automatically later. Reload this page to refresh the status.' => 'Berörda inskickningar skickas inte automatiskt senare. Ladda om sidan för att uppdatera statusen.',
     'Any Language' => 'Valfritt språk',
     'Language Filter' => 'Språkfilter',
     'Message' => 'Meddelande',

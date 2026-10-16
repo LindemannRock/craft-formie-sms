@@ -54,6 +54,10 @@ A single dropdown chooses who the message is sent from. Senders are grouped unde
 
 Only enabled sender IDs belonging to enabled providers are listed. Senders marked development-only in SMS Manager show a `[Dev]` suffix. This field is optional — leaving it on the default is a valid choice.
 
+When SMS Manager reports an active hold for the selected sender, a notice beneath **Sender ID** shows when the hold expires or whether it needs manual release. The **SMS Manager** link in the notice opens provider settings in the same tab. Changing the sender updates the notice using the status captured when this page loaded; reload the page to check for changes.
+
+The notice uses SMS Manager's optional sender-aware status API (5.19+). If that API or the status is unavailable, the panel directs you to check SMS Manager. Sending still checks the current hold status at dispatch time. Affected submissions are not automatically sent after the hold ends.
+
 ### Recipient(s)
 
 Who to text. Required. Enter one or more numbers, separated by commas, and use Formie variables to pull numbers from the submission:
@@ -96,7 +100,13 @@ When a form is submitted, Formie SMS:
 5. Renders the **Message** with the submission's data.
 6. Hands each recipient + message to SMS Manager to send, under the source name `formie-sms` with the submission ID attached.
 
-SMS Manager records every message in its SMS Logs and rolls it into Analytics. If any recipient fails, Formie SMS reports the integration as failed after attempting the remaining recipients. Formie's queued integration may retry the submission, which can send again to recipients who succeeded on the earlier attempt. Check SMS Manager's logs before retrying manually. Formie and Craft error logs use recipient references rather than raw numbers.
+SMS Manager owns delivery, logs, analytics, and provider holds. With logging and analytics enabled, it records attempted sends; calls suppressed by an active hold do not create another attempted-send entry.
+
+An ordinary recipient failure does not stop the other recipients. An account- or transport-wide block stops the remaining recipient loop immediately, including when the current failure first creates a hold. Formie SMS reports one translated integration error for that block, without including numbers, credentials, message content, or raw provider responses. Sends completed before the block remain completed.
+
+The integration returns `false` if delivery is incomplete. Formie passes this result through when sending synchronously; its integration job marks a `false` result as failed. The default queue policy allows one attempt. A custom queue retry policy or a manual retry can run the whole submission again and duplicate earlier successful sends. Check SMS Manager's per-message history before retrying.
+
+Formie SMS does not retry, reschedule, release holds, or replay submissions. SMS Manager alone decides which account or transport is blocked and when sending can resume. See [Troubleshooting](../resources/troubleshooting.md#sending-stops-with-an-account-or-transport-block) for recovery checks.
 
 ## Limitations
 

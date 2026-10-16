@@ -28,7 +28,21 @@ Work through these in order:
 4. **Check the SMS log.** Each failed message stores the provider's error — that usually names the cause.
 5. **Provider status and credit.** Confirm the provider is enabled and the account has balance.
 
-If a form targets several recipients and one fails, the integration reports failure after trying all of them. Formie's normal queued retry can repeat messages that succeeded on the first attempt; check SMS Manager's per-message history before triggering another send.
+For an ordinary recipient failure, Formie SMS tries the remaining recipients and reports failure. An account- or transport-wide block stops the remaining recipients immediately.
+
+## Sending stops with an account or transport block
+
+The form's Integrations settings can show a hold notice beneath **Sender ID**. Follow the inline **SMS Manager** link to check the provider. This is a page-load snapshot; reload the page after a hold expires or is released. If the status API is unavailable, the notice asks you to check SMS Manager directly.
+
+When a submission attempts to send, Formie reports that SMS Manager has blocked sending and that remaining recipients were not processed. This can happen before any provider request, or when a provider failure first causes SMS Manager to block the account or transport.
+
+1. Check the selected provider and sender in SMS Manager, including whether the sender uses the main or development account.
+2. Review SMS Manager's hold status and recovery guidance. An existing hold can suppress a request without adding a new per-message SMS log.
+3. Check the submission's earlier successful sends before deciding what still needs delivery. A failure after the first recipient does not undo that recipient's SMS.
+
+Resolve the underlying account or transport issue through SMS Manager. Formie SMS does not release holds, wait for expiry, reschedule, or retry recipients.
+
+A queued Formie integration is marked failed when `sendPayload()` returns `false`; the default queue policy allows one attempt. Custom automatic retries or a manual retry can replay the entire recipient list, including successful recipients. Do not blindly retry a partially delivered submission. Review the successful sends first and arrange any remaining delivery deliberately.
 
 ## Error: "No valid recipients after rendering"
 

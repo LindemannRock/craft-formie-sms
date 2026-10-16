@@ -14,6 +14,7 @@ return [
     'Open Formie SMS' => 'Formie SMS を開く',
 
     // Controller messages
+    'SMS Manager has blocked sending for this account or transport. Remaining recipients were not processed. Check SMS Manager before retrying.' => 'SMS Manager がこのアカウントまたは通信の送信を停止しました。残りの受信者は処理されていません。再試行する前に SMS Manager を確認してください。',
     'Failed to send SMS to {recipient}' => '{recipient} への SMS 送信に失敗しました',
     'No valid recipients after rendering — SMS not sent. Check the integration\'s "Recipients" template and the submission data.' => 'レンダリング後に有効な受信者が見つかりません — SMS は送信されませんでした。統合の「受信者」テンプレートと送信データを確認してください。',
     'SMS Manager plugin is not installed.' => 'SMS Manager プラグインがインストールされていません。',
@@ -31,6 +32,10 @@ return [
     'This integration uses SMS Manager to send SMS messages. Configure providers and sender IDs in the {link} settings.' => 'この統合は SMS Manager を使用して SMS メッセージを送信します。{link} の設定でプロバイダーと送信者 ID を設定してください。',
 
     // Integration: Form settings
+    'SMS Manager has paused sending until {time}.' => 'SMS Manager が {time} まで送信を停止しています。',
+    'SMS sending is paused until this hold is released in SMS Manager.' => 'SMS Manager でこの送信停止が解除されるまで、SMS は送信されません。',
+    'Hold status is unavailable here. Check SMS Manager.' => 'ここでは送信停止の状態を確認できません。SMS Manager を確認してください。',
+    'Affected submissions will not send automatically later. Reload this page to refresh the status.' => '対象の送信データは後で自動的に送信されません。状態を更新するには、このページを再読み込みしてください。',
     'Any Language' => 'すべての言語',
     'Language Filter' => '言語フィルター',
     'Message' => 'メッセージ',

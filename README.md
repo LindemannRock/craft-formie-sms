@@ -3,9 +3,9 @@
 # Formie SMS Plugin for Craft CMS
 
 [![Latest Version](https://img.shields.io/packagist/v/lindemannrock/craft-formie-sms.svg)](https://packagist.org/packages/lindemannrock/craft-formie-sms)
-[![Craft CMS](https://img.shields.io/badge/Craft%20CMS-5.10+-orange.svg)](https://craftcms.com/)
+[![Craft CMS](https://img.shields.io/badge/Craft%20CMS-5.11+-orange.svg)](https://craftcms.com/)
 [![Formie](https://img.shields.io/badge/Formie-3.0+-purple.svg)](https://verbb.io/craft-plugins/formie)
-[![SMS Manager](https://img.shields.io/badge/SMS%20Manager-5.16+-green.svg)](https://github.com/LindemannRock/craft-sms-manager)
+[![SMS Manager](https://img.shields.io/badge/SMS%20Manager-5.18+-green.svg)](https://github.com/LindemannRock/craft-sms-manager)
 [![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://php.net/)
 [![License](https://img.shields.io/packagist/l/lindemannrock/craft-formie-sms.svg)](LICENSE.md)
 
@@ -18,20 +18,21 @@ This plugin is in active development and not yet available on the Craft Plugin S
 ## Features
 
 - **SMS on submission** — send a text message every time a Formie form is submitted
+- **Hold notices** — see applicable sending holds beneath Sender ID when SMS Manager's status API is available
 - **Sender selection** — pick a sender ID per form, grouped by provider, or follow the SMS Manager default
 - **Dynamic recipients** — text static numbers or pull them from form fields with variables
 - **Personalized messages** — build the message from submission data using Formie variables
 - **Language filtering** — only send for submissions from a specific site language
 - **Multi-provider** — sends through any provider configured in SMS Manager
-- **Logs & analytics** — every message is recorded in SMS Manager's SMS Logs and Analytics
+- **Logs & analytics** — attempted sends appear in SMS Manager's SMS Logs and Analytics when enabled
 
 ## Requirements
 
-- Craft CMS 5.10 or greater
+- Craft CMS 5.11 or greater
 - PHP 8.2 or greater
 - [Formie](https://verbb.io/craft-plugins/formie) 3.0 or greater
-- [SMS Manager](https://github.com/LindemannRock/craft-sms-manager) 5.16 or greater
-- [Base](https://github.com/LindemannRock/craft-plugin-base) 5.38 or greater
+- [SMS Manager](https://github.com/LindemannRock/craft-sms-manager) 5.18 or greater
+- [Base](https://github.com/LindemannRock/craft-plugin-base) 5.39 or greater
 
 ## Installation
 
