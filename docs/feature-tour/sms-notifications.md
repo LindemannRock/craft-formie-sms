@@ -56,7 +56,7 @@ Only enabled sender IDs belonging to enabled providers are listed. Senders marke
 
 When SMS Manager reports an active hold for the selected sender, a notice beneath **Sender ID** shows when the hold expires or whether it needs manual release. The **SMS Manager** link in the notice opens provider settings in the same tab. Changing the sender updates the notice using the status captured when this page loaded; reload the page to check for changes.
 
-The notice uses SMS Manager's optional sender-aware status API (5.19+). If that API or the status is unavailable, the panel directs you to check SMS Manager. Sending still checks the current hold status at dispatch time. Affected submissions are not automatically sent after the hold ends.
+The notice uses the sender-aware status API included in the required SMS Manager 5.18.1+. If the selected provider does not expose hold status, or status cannot be read, the panel directs you to check SMS Manager. Sending still checks the current hold status at dispatch time. Affected submissions are not automatically sent after the hold ends.
 
 ### Recipient(s)
 

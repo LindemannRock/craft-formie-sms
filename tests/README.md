@@ -2,7 +2,7 @@
 
 Package tests extend `tests/TestCase.php` and Base's tracked Craft test lifecycle. Parsing/sender-resolution tests use service stubs; `SmsTransportHoldTest` exercises actual SMS Manager dispatch, classification and persistence with synthetic provider responses.
 
-`SmsSenderHoldNoticeTest` uses `StatusProvider` and `StatusTransport` to supply provider-owned lane and safe status projections. It verifies timed/manual holds, independent development routing, expired/unavailable status, the older-API fallback and the rendered inline same-tab link. These status-only tests make no provider requests.
+`SmsSenderHoldNoticeTest` uses `StatusProvider` and `StatusTransport` to supply provider-owned lane and safe status projections. It verifies timed/manual holds, independent development routing, expired/unavailable status, the missing-status-capability fallback and the rendered inline same-tab link. These status-only tests make no provider requests.
 
 `tests/bootstrap.php` installs `TransportIsolation` before plugins boot. Guzzle has only an explicit MockHandler: an unexpected request without one exits with code 90 before network dispatch. Each process reports intercepted request count, real requests (zero) and workers executed (zero). Synthetic dispatch uses `gateway.example.test`, example phone numbers and synthetic credentials.
 

@@ -163,7 +163,7 @@ class Sms extends Miscellaneous
 
     /**
      * Read a safe page-load snapshot; SMS Manager still owns admission at send time.
-     * Older SMS Manager installs can dispatch safely without the optional status API.
+     * Providers without readable hold status receive an informational fallback.
      */
     private function buildSenderHoldNotices(array $options): array
     {
