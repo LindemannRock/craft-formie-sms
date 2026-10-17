@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.11.3](https://github.com/LindemannRock/craft-formie-sms/compare/v3.11.2...v3.11.3) - 2026-10-17
+
+
+### Fixed
+
+* **deps:** require SMS Manager 5.18.1 ([9291f1b](https://github.com/LindemannRock/craft-formie-sms/commit/9291f1b7390add864adb25db3eb47803ac50957e))
+* **sms:** respect transport holds and show sender notices ([33e93aa](https://github.com/LindemannRock/craft-formie-sms/commit/33e93aa8ee66f069ab2333340750e72f28309dc1))
+
 ## [3.11.2](https://github.com/LindemannRock/craft-formie-sms/compare/v3.11.1...v3.11.2) - 2026-09-16
 
 
